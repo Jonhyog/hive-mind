@@ -1,0 +1,1 @@
+Self contained and defined inside docker-compose.yml in the root folder

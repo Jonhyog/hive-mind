@@ -1,0 +1,58 @@
+services:
+
+  backend-mongo:
+      image: mongo
+      container_name: bee-monitoring-mongo-db
+      # Exposto temporariamente, facilita no desenvolvimento e permite ferramentas de terceiros
+      ports:
+        - 27017:27017
+      volumes:
+        - mongo-data:/data/db
+      networks:
+        - bee-network
+
+  frontend-react:
+      build: ./frontend
+      container_name: bee-monitoring-react
+      ports:
+        - "80:3000"
+      volumes:
+        - ./frontend/src:/app/src
+      environment:
+        - CHOKIDAR_USEPOLLING=true
+      env_file:
+        - frontend/.env
+      networks:
+      - bee-network
+
+  backend-nodejs-api:
+      build: ./backend-node/api
+      volumes:
+        - ./backend-node/api:/usr/src/app
+      ports:
+        - "3003:3000"
+      networks:
+        - bee-network
+      depends_on:
+        - backend-mongo
+
+  backend-python:
+      build: ./backend-python
+      # Exposto temporariamente, facilita no desenvolvimento e permite ferramentas de terceiros
+      ports:
+        - "5000:3000"
+      networks:
+        - bee-network
+      volumes:
+        - ./backend-python/app:/app
+      restart: on-failure
+      depends_on:
+        - backend-mongo
+      command: uvicorn main:app --host 0.0.0.0 --port 3000 --reload
+  
+volumes:
+  mongo-data:
+
+networks:
+  bee-network:
+    driver: bridge
