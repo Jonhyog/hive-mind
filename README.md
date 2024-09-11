@@ -24,7 +24,7 @@ When running docker commands, be sure to run with `sudo` or assure you are runni
 ### Troubleshoot
 
 * Trying to `docker-compose up --build` containers that already exist will result in the following error. To solve this issue run `docker-compose down`  
-'''
+```
 ...
 
   File "/usr/lib/python3/dist-packages/compose/service.py", line 960, in _build_container_volume_options
@@ -34,5 +34,4 @@ When running docker commands, be sure to run with `sudo` or assure you are runni
   File "/usr/lib/python3/dist-packages/compose/service.py", line 1579, in get_container_data_volumes
     container.image_config['ContainerConfig'].get('Volumes') or {}
 KeyError: 'ContainerConfig'
-
-'''
+```
