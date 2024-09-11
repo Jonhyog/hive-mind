@@ -5,11 +5,9 @@ RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 
 # Install dependencies
-COPY package.json .
+COPY . .
 RUN npm install
 
-# Bundle app source
-COPY index.js ./
 
 # Exports
 EXPOSE 3000

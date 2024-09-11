@@ -28,7 +28,7 @@ services:
   backend-nodejs-api:
       build: ./backend-node/api
       volumes:
-        - ./backend-node/api:/usr/src/app
+        - ./backend-node/api/src:/usr/src/app/src
       ports:
         - "3003:3000"
       networks:

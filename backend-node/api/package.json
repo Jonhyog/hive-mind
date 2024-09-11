@@ -1,9 +1,9 @@
 {
   "name": "api",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
-    "start": "node index",
+    "start": "node src/index",
     "start.dev": "nodemon"
   },
   "keywords": [],
