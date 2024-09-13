@@ -7,10 +7,17 @@ class BaseController{
     }
 
     async get(req, res) {
-        const { limit, startDate, endDate } = req.query;
+        const { limit, startDate, endDate, sensorId, location} = req.query;
         try {
             // Cria um filtro opcional por intervalo de tempo
             let filter = {};
+            if(sensorId){
+                filter.sensorId=sensorId
+            }
+            if(location){
+                filter.location = location
+            }
+
             if (startDate || endDate) {
                 filter.timestamp = {};
                 if (startDate) filter.timestamp.$gte = new Date(startDate);
@@ -28,10 +35,11 @@ class BaseController{
         }
     }
     async put(req, res) {
-        const { sensorId, value } = req.query;
+        const { sensorId, value, location } = req.query;
         const newSensorData = new this.sensorData({
+            location,
             sensorId,
-            value
+            value,
         });
 
         try {
