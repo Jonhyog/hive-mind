@@ -8,14 +8,17 @@ class BaseController{
 
     async get(req, res) {
         const { limit, startDate, endDate, sensorId, location} = req.query;
+
         try {
-            // Cria um filtro opcional por intervalo de tempo
+
             let filter = {};
+
             if(sensorId){
-                filter.sensorId=sensorId
+                filter.sensorId=sensorId;
             }
+
             if(location){
-                filter.location = location
+                filter.location = location;
             }
 
             if (startDate || endDate) {
@@ -24,10 +27,9 @@ class BaseController{
                 if (endDate) filter.timestamp.$lte = new Date(endDate);
             }
 
-            // Busca os dados com o filtro e ordena pelos mais recentes
             const data = await this.sensorData.find(filter)
-                .sort({ timestamp: -1 }) // Ordena por timestamp decrescente
-                .limit(parseInt(limit) || 0); // Limita os resultados, se 'limit' for fornecido
+                .sort({ timestamp: -1 })
+                .limit(parseInt(limit) || 0);
 
             res.status(200).json(data);
         } catch (err) {
