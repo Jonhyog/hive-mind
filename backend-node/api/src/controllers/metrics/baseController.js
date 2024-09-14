@@ -36,7 +36,7 @@ class BaseController{
             res.status(500).json({ message: err.message });
         }
     }
-    async put(req, res) {
+    async post(req, res) {
         const { sensorId, value, location } = req.query;
         const newSensorData = new this.sensorData({
             location,

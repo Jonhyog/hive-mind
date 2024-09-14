@@ -10,7 +10,7 @@ class PressureRoute{
 
         router.route(DEFAULT_ROUTE)
             .get((req, res) => this.controller.get(req, res))
-            .put((req, res) => this.controller.put(req, res))
+            .post((req, res) => this.controller.post(req, res))
             .delete((req, res) => this.controller.del(req, res));
     }
 }
