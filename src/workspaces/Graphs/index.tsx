@@ -12,10 +12,9 @@ import LineChart from "@/components/custom/LineChart";
 import CustomBarChart from "@/components/custom/BarChart";
 import CustomRadialChart from "@/components/custom/RadialChart";
 
-import { onValue, ref, set } from "firebase/database";
-
-import db from "@/utils/firebase";
 import { Button } from "@/components/ui/button";
+import useGetRealtime from "@/hooks/useGetRealtime";
+import useSetRealtime from "@/hooks/useSetRealtime";
 
 const chartData = [
   { date: "2024-04-01", desktop: 222, mobile: 150 },
@@ -261,37 +260,60 @@ const radialConfig = {
   },
 } satisfies ChartConfig;
 
-const GraphsWorkspace = (): JSX.Element => {
-  const incomingRef = ref(db, "/data/incoming");
-  const departingRef = ref(db, "/data/departing");
+const temperatureConfig = {
+  visitors: {
+    label: "Visitors",
+  },
+  temperature: {
+    label: "Temperature",
+    color: "hsl(var(--chart-1))",
+  },
+} satisfies ChartConfig;
 
-  const [radialData, setRadialData] = useState({incoming: 0, departing: 0});
+type FirebaseSensorData = {
+  [U: string]: {
+    timestamp: string,
+    temperature: number
+  }
+};
+
+const GraphsWorkspace = (): JSX.Element => {
+  const radialHookData = useGetRealtime("/data");
+  const setIncoming = useSetRealtime("/data/incoming");
+  const setDeparting = useSetRealtime("/data/departing");
+
+  const temperatureHookData = useGetRealtime("/lBBDn8");
+
+  const [sortedTemperatureData, setSortedTemperatureData] = useState([{}]);
 
   useEffect(() => {
-    const dataRef = ref(db, "/data");
-
-    onValue(dataRef, (snapshot) => {
-      const data = snapshot.val();
-      
-      console.log("Firebase /incoming updated to ", data);
-
-      setRadialData(data);
+    // const boardRef = ref(db, "/lBBDn8");
+    const lineData = Object.values(temperatureHookData).map(obj => {
+      return {
+        date: new Date(obj.timestamp).toISOString(),
+        temperature: obj.temperature,
+      }
     });
-  }, []);
+
+    lineData.sort(({ date: a}, {date: b}): number => {
+      const aDate = new Date(a);
+      const bDate = new Date(b);
+
+      return aDate.getTime() - bDate.getTime();
+    });
+
+    setSortedTemperatureData(lineData);
+  }, [temperatureHookData]);
 
   const handleIncomingUpdate = useCallback(() => {
     const randomNumber = Math.floor(Math.random() * 1000);
-    console.log("Setting Firebase /data to ", randomNumber);
-
-    set(incomingRef, randomNumber);
-  }, [incomingRef]);
+    setIncoming(randomNumber);
+  }, [setIncoming]);
 
   const handleDepartingUpdate = useCallback(() => {
     const randomNumber = Math.floor(Math.random() * 1000);
-    console.log("Setting Firebase /departing to ", randomNumber);
-
-    set(departingRef, randomNumber);
-  }, [departingRef]);
+    setDeparting(randomNumber);
+  }, [setDeparting]);
 
   return (
     <div className="flex flex-col gap-4">
@@ -324,13 +346,13 @@ const GraphsWorkspace = (): JSX.Element => {
       </div>
       <div className="flex flex-row flex-1 gap-4">
         <CustomRadialChart
-          chartData={radialData}
+          chartData={radialHookData}
           chartConfig={radialConfig}
           className="w-1/3"
         />
         <LineChart
-          chartData={totalData}
-          chartConfig={totalConfig}
+          chartData={sortedTemperatureData}
+          chartConfig={temperatureConfig}
           className="flex-1"
         />
         {/* <LineMock className="flex-1" /> */}

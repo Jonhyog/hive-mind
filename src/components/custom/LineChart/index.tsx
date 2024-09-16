@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 
 import { Area, AreaChart, CartesianGrid, XAxis } from "recharts";
 
@@ -24,6 +24,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import fillTime from "@/utils/fillTime";
 
 interface LineData {
   [U: string]: string | number;
@@ -35,42 +36,62 @@ interface LineMockProps {
   className: string;
 }
 
+type TimeInterval = "1d" | "7d" | "30d";
+
 const LineChart = ({
-  chartData,
+  chartData = [{}],
   chartConfig,
   className,
 }: LineMockProps): JSX.Element => {
-  const [timeRange, setTimeRange] = useState("90d");
+  const [timeRange, setTimeRange] = useState<TimeInterval>("1d");
 
-  const filteredData = chartData.filter((item) => {
-    const date = new Date(item.date);
-    const now = new Date();
-    let daysToSubtract = 90;
-    if (timeRange === "30d") {
-      daysToSubtract = 30;
-    } else if (timeRange === "7d") {
-      daysToSubtract = 7;
-    }
-    now.setDate(now.getDate() - daysToSubtract);
-    return date >= now;
-  });
+  const getIntervalLabel = useCallback((interval: TimeInterval) => {
+    const intervalLabels = {
+      "1d": "last day",
+      "7d": "last week",
+      "30d": "last month"
+    };
+
+    return intervalLabels[interval];
+  }, []);
+
+  const filteredData = useMemo(() => {
+    const filtered = chartData.filter((item) => {
+      const date = new Date(item.date);
+      const now = new Date();
+      let daysToSubtract = 1;
+      if (timeRange === "7d") {
+        daysToSubtract = 7;
+      } else if (timeRange === "30d") {
+        daysToSubtract = 30;
+      }
+      now.setDate(now.getDate() - daysToSubtract);
+
+      return date >= now;
+    });
+
+    const filledData = fillTime(filtered, 5 * 60 * 1000);
+
+    return filledData.length > 0 ? filledData : [{}];
+  }, [chartData, timeRange]);
 
   const plots = useMemo(() => {
-    const keys = Object.keys(chartData[0]);
+    const keys = Object.keys(filteredData[0]);
 
-    return keys.filter((k) => typeof chartData[0][k] !== "string").map((k) => (
+    return keys.filter((k) => typeof filteredData[0][k] !== "string").map((k) => (
       <Area
         dataKey={k}
-        type="natural"
+        type="linear"
         fill={`url(#fill${chartConfig[k]?.label ?? ""})`}
         stroke={`var(--color-${k})`}
         stackId="a"
+        isAnimationActive={false}
       />
     ));
-  }, [chartData, chartConfig]);
+  }, [filteredData, chartConfig]);
 
   const plotsGradients = useMemo(() => {
-    const keys = Object.keys(chartData[0]);
+    const keys = Object.keys(filteredData[0]);
 
     return keys.map((k) => (
       <linearGradient
@@ -84,7 +105,7 @@ const LineChart = ({
         <stop offset="95%" stopColor={`var(--color-${k})`} stopOpacity={0.1} />
       </linearGradient>
     ));
-  }, [chartData, chartConfig]);
+  }, [filteredData, chartConfig]);
 
   return (
     <Card className={className}>
@@ -92,7 +113,7 @@ const LineChart = ({
         <div className="grid flex-1 gap-1 text-center sm:text-left">
           <CardTitle>Area Chart - Interactive</CardTitle>
           <CardDescription>
-            Showing collected data for the last 3 months
+            Showing collected data for the {getIntervalLabel(timeRange)}
           </CardDescription>
         </div>
         <Select value={timeRange} onValueChange={setTimeRange}>
@@ -103,14 +124,14 @@ const LineChart = ({
             <SelectValue placeholder="Last 3 months" />
           </SelectTrigger>
           <SelectContent className="rounded-xl">
-            <SelectItem value="90d" className="rounded-lg">
-              Last 3 months
-            </SelectItem>
-            <SelectItem value="30d" className="rounded-lg">
-              Last 30 days
+            <SelectItem value="1d" className="rounded-lg">
+              Last day
             </SelectItem>
             <SelectItem value="7d" className="rounded-lg">
-              Last 7 days
+              Last week
+            </SelectItem>
+            <SelectItem value="30d" className="rounded-lg">
+              Last month
             </SelectItem>
           </SelectContent>
         </Select>
@@ -125,16 +146,13 @@ const LineChart = ({
             <CartesianGrid vertical={false} />
             <XAxis
               dataKey="date"
-              tickLine={false}
-              axisLine={false}
+              tickLine={true}
+              axisLine={true}
               tickMargin={8}
               minTickGap={32}
               tickFormatter={(value) => {
                 const date = new Date(value);
-                return date.toLocaleDateString("en-US", {
-                  month: "short",
-                  day: "numeric",
-                });
+                return date.toLocaleTimeString();
               }}
             />
             <ChartTooltip
@@ -142,30 +160,13 @@ const LineChart = ({
               content={
                 <ChartTooltipContent
                   labelFormatter={(value) => {
-                    return new Date(value).toLocaleDateString("en-US", {
-                      month: "short",
-                      day: "numeric",
-                    });
+                    return new Date(value).toLocaleString();
                   }}
                   indicator="dot"
                 />
               }
             />
             {plots}
-            {/* <Area
-              dataKey="mobile"
-              type="natural"
-              fill="url(#fillMobile)"
-              stroke="var(--color-mobile)"
-              stackId="a"
-            />
-            <Area
-              dataKey="desktop"
-              type="natural"
-              fill="url(#fillDesktop)"
-              stroke="var(--color-desktop)"
-              stackId="a"
-            /> */}
             <ChartLegend content={<ChartLegendContent />} />
           </AreaChart>
         </ChartContainer>
