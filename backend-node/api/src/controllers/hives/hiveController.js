@@ -1,18 +1,55 @@
-const SensorData = require('../../models/metricsModel')
+const SensorData = require('../../models/hivesModel')
 
 class HiveController{
     
-    constructor(){
-    
-    }
     async get(req, res) {
-        res.send("GET")
+        const { hiveId, location, description } = req.query;
+
+        try {
+            let filter = {};
+            if(hiveId){
+                filter.hiveId = hiveId
+            }
+            if(location){
+                filter.location = location
+            }
+            if(description){
+                filter.description = description
+            }
+
+            const data = await SensorData.find(filter)
+            res.status(200).json(data);
+        } catch (err) {
+            res.status(500).json({ message: err.message });
+        }
     }
     async post(req, res) {
-        res.send("POST")
+        const { hiveId, location, description } = req.query;
+        const newSensorData = new SensorData({
+            hiveId,
+            location,
+            description
+        })
+
+        try {
+            const data = await newSensorData.save()
+            res.status(201).json(data);
+        } catch (err) {
+            res.status(400).json({ message: err.message });
+        }
     }
     async del(req, res) {
-        res.send("DELETE")
+        const { hiveId } = req.params;
+
+        try {
+            const deletedData = await SensorData.findByIdAndDelete(hiveId);
+            if (!deletedData) {
+                return res.status(404).json({ message: 'Sensor data not found' });
+            }
+            res.status(200).json({ message: 'Deleted successfully' });
+        } catch (err) {
+            res.status(500).json({ message: err.message });
+        }
     }
 
 }
