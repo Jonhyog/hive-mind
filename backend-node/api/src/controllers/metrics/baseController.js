@@ -1,24 +1,39 @@
-class BaseController{
+const SensorData = require('../../models/metricsModel')
 
-    constructor(sensorData){
+class BaseController{
+    
+    constructor(metricType){
         
-        this.sensorData = sensorData
+        this.sensorData = SensorData
+        this.metricType = metricType
 
     }
 
     async get(req, res) {
-        const { limit, startDate, endDate, sensorId, location} = req.query;
+        const { limit, 
+            startDate, 
+            endDate,
+            sensorId,
+            hiveId,
+            value,
+            timestamp
+        } = req.query;
 
         try {
 
-            let filter = {};
+            let filter = {metricType : this.metricType};
 
             if(sensorId){
                 filter.sensorId=sensorId;
             }
-
-            if(location){
-                filter.location = location;
+            if(hiveId){
+                filter.hiveId = hiveId;
+            }
+            if(value){
+                filter.value = value;
+            }
+            if(timestamp){
+                filter.timestamp=timestamp;
             }
 
             if (startDate || endDate) {
@@ -37,11 +52,13 @@ class BaseController{
         }
     }
     async post(req, res) {
-        const { sensorId, value, location } = req.query;
+        const { sensorId, hiveId, value, timestamp } = req.query;
         const newSensorData = new this.sensorData({
-            location,
             sensorId,
+            hiveId,
+            metricType: this.metricType,
             value,
+            timestamp
         });
 
         try {

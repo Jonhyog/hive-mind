@@ -1,10 +1,11 @@
-const SensorData = require('../../models/umidityData')
 const BaseController = require('./baseController')
+
+const METRIC_TYPE = "umidity"
 
 class UmidityController extends BaseController{
 
     constructor(){
-        super(SensorData)
+        super(METRIC_TYPE)
     }
 
 }

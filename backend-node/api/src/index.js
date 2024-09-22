@@ -2,6 +2,8 @@ const express = require('express')
 const mongoose = require('mongoose');
 const MetricsRouter = require("./routes/metricsRouter")
 const cors = require('cors');
+const HiveRouter = require('./routes/hivesRouter');
+const SensorRouter = require('./routes/sensorsRouter');
 
 const app = express()
 
@@ -23,7 +25,9 @@ app.route("").get((req, res) => {
   });
 
 // Cria os endpoints da API
-router = new MetricsRouter(app)
+new MetricsRouter(app)
+new HiveRouter(app)
+new SensorRouter(app)
 
 console.log(process.env)
 app.listen(3000)

@@ -1,10 +1,11 @@
-const SensorData = require('../../models/pressureData')
 const BaseController = require('./baseController')
+
+const METRIC_TYPE = "pressure"
 
 class PressureController extends BaseController{
 
     constructor(){
-        super(SensorData)
+        super(METRIC_TYPE)
     }
 
 }

@@ -1,10 +1,11 @@
-const SensorData = require('../../models/noiseData')
 const BaseController = require('./baseController')
+
+const METRIC_TYPE = "noise"
 
 class NoiseController extends BaseController{
 
     constructor(){
-        super(SensorData)
+        super(METRIC_TYPE)
     }
 
 }

@@ -1,11 +1,11 @@
-const SensorData = require('../../models/temperatureData');
 const BaseController = require('./baseController');
 
+const METRIC_TYPE = "temperature"
 
 class TemperatureController extends BaseController{
 
     constructor(){
-        super(SensorData)
+        super(METRIC_TYPE)
     }
 }
 
