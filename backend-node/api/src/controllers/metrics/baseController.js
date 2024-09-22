@@ -43,8 +43,7 @@ class BaseController{
             }
 
             const data = await this.sensorData.find(filter)
-                .sort({ timestamp: -1 })
-                .limit(parseInt(limit) || 0);
+                .limit(Number(limit || 0));
 
             res.status(200).json(data);
         } catch (err) {
