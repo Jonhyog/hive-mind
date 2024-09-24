@@ -12,6 +12,15 @@ services:
         - bee-network
 
   frontend-react:
+    build: ./frontend
+    container_name: hive-mind-dashboard
+    ports:
+      - 5173:5173
+    volumes:
+      - ./frontend/src:/srv/app/src
+    tty: true
+  
+  frontend-react-test:
       build: ./frontend-test
       container_name: bee-monitoring-react
       ports:
