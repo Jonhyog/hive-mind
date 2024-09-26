@@ -34,7 +34,7 @@ const SelectHive = () => {
   }, [hivesData]);
 
   return (
-    <Select onValueChange={handleHiveChange}>
+    <Select value={hive} onValueChange={handleHiveChange}>
       <SelectTrigger className="w-[180px]">
         <SelectValue placeholder="Select a hive" />
       </SelectTrigger>

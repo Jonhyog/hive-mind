@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState } from "react";
 
-import { Area, AreaChart, CartesianGrid, XAxis } from "recharts";
+import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts";
 
 import {
   Card,
@@ -154,6 +154,13 @@ const LineChart = ({
                 const date = new Date(value);
                 return date.toLocaleTimeString();
               }}
+            />
+            <YAxis
+              tickLine={false}
+              axisLine={false}
+              tickMargin={8}
+              tickCount={3}
+              width={26}
             />
             <ChartTooltip
               cursor={false}

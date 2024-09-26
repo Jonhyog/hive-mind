@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import {
   Card,
@@ -15,6 +15,9 @@ import CustomRadialChart from "@/components/custom/RadialChart";
 import { Button } from "@/components/ui/button";
 import useGetRealtime from "@/hooks/useGetRealtime";
 import useSetRealtime from "@/hooks/useSetRealtime";
+import useGetTemperature from "@/hooks/useGetTemperature";
+import useGetPressure from "@/hooks/useGetPressure";
+import useGetHumidity from "@/hooks/useGetHumidity";
 
 const chartData = [
   { date: "2024-04-01", desktop: 222, mobile: 150 },
@@ -270,6 +273,26 @@ const temperatureConfig = {
   },
 } satisfies ChartConfig;
 
+const pressureConfig = {
+  visitors: {
+    label: "Visitors",
+  },
+  pressure: {
+    label: "Pressure",
+    color: "hsl(var(--chart-1))",
+  },
+} satisfies ChartConfig;
+
+const humidityConfig = {
+  visitors: {
+    label: "Visitors",
+  },
+  humidity: {
+    label: "Humidity",
+    color: "hsl(var(--chart-1))",
+  },
+} satisfies ChartConfig;
+
 type FirebaseSensorData = {
   [U: string]: {
     timestamp: string,
@@ -284,7 +307,36 @@ const GraphsWorkspace = (): JSX.Element => {
 
   const temperatureHookData = useGetRealtime("/lBBDn8");
 
+  const temperatureData = useGetTemperature("7ae80c", "2ca599");
+  const pressureData = useGetPressure("7ae80c", "d916f5");
+  const humidityData = useGetHumidity("7ae80c", "b43223");
+
   const [sortedTemperatureData, setSortedTemperatureData] = useState([{}]);
+
+  const processedTemperature = useMemo(() => {
+    return temperatureData.map(({timestamp, value}) => {return {date: timestamp, temperature: value}});
+  }, [temperatureData]);
+
+  const processedPressure = useMemo(() => {
+    return pressureData.map(({timestamp, value}) => {return {date: timestamp, pressure: value}});
+  }, [pressureData]);
+
+  const processedHumidity = useMemo(() => {
+    return humidityData.map(({timestamp, value}) => {return {date: timestamp, humidity: value}})
+  }, [humidityData]);
+
+  useEffect(() => {
+    console.log("Processed temperature data: ", processedTemperature);
+  }, [processedTemperature]);
+
+  useEffect(() => {
+    console.log("Processed pressure data: ", processedPressure);
+  }, [processedPressure]);
+
+  useEffect(() => {
+    console.log("Processed humidity data: ", processedHumidity);
+  }, [processedHumidity]);
+
 
   useEffect(() => {
     // const boardRef = ref(db, "/lBBDn8");
@@ -351,8 +403,18 @@ const GraphsWorkspace = (): JSX.Element => {
           className="w-1/3"
         />
         <LineChart
-          chartData={sortedTemperatureData}
+          chartData={processedTemperature}
           chartConfig={temperatureConfig}
+          className="flex-1"
+        />
+        <LineChart
+          chartData={processedPressure}
+          chartConfig={pressureConfig}
+          className="flex-1"
+        />
+        <LineChart
+          chartData={processedHumidity}
+          chartConfig={humidityConfig}
           className="flex-1"
         />
         {/* <LineMock className="flex-1" /> */}
