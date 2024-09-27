@@ -39,10 +39,10 @@ class HiveController{
         }
     }
     async del(req, res) {
-        const { hiveId } = req.params;
+        const { sensorId } = req.params;
 
         try {
-            const deletedData = await SensorData.findByIdAndDelete(hiveId);
+            const deletedData = await SensorData.findByIdAndDelete(sensorId);
             if (!deletedData) {
                 return res.status(404).json({ message: 'Sensor data not found' });
             }
