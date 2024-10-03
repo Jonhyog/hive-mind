@@ -1,50 +1,84 @@
-const SensorData = require('../../models/sensorsModel')
+const SensorData = require("../../models/sensorsModel");
+const MetricsData = require("../../models/metricsModel");
 
-class SensorController{
-    
-    async get(req, res) {
-        const { sensorId } = req.query;
+class SensorController {
+  async get(req, res) {
+    const { hiveId, metricType } = req.query;
 
+    try {
+      let filter = {};
+      if (hiveId) {
+        filter.hiveId = hiveId;
+      }
+
+      if (metricType) {
+        filter.metricType = { $in: [metricType] };
+      }
+
+      const data = await MetricsData.aggregate([
+        {
+          $match: filter,
+        },
+        {
+          $group: {
+            _id: "$sensorId",
+            metricsType: {
+              $addToSet: "$metricType",
+            },
+          },
+        },
+      ]);
+
+      data.forEach((element) => {
+        element.sensorId = element._id;
+        delete element._id;
+      });
+
+      for (const element of data) {
         try {
-            let filter = {};
-            if(sensorId){
-                filter.sensorId = sensorId
-            }
-
-            const data = await SensorData.find(filter)
-            res.status(200).json(data);
-        } catch (err) {
-            res.status(500).json({ message: err.message });
+          const [queryData] = await SensorData.find({
+            sensorId: element.sensorId,
+          });
+          element.description = queryData.description;
+        } catch (error) {
+          console.error("Erro ao buscar sensor:", error);
         }
-    }
-    async post(req, res) {
-        const { sensorId, description } = req.query;
-        const newSensorData = new SensorData({
-            sensorId,
-            description
-        })
+      }
 
-        try {
-            const data = await newSensorData.save()
-            res.status(201).json(data);
-        } catch (err) {
-            res.status(400).json({ message: err.message });
-        }
+      res.status(200).json(data);
+    } catch (err) {
+      res.status(500).json({ message: err.message });
     }
-    async del(req, res) {
-        const { sensorId } = req.params;
+  }
+  async post(req, res) {
+    const { sensorId, hiveId, metric, description } = req.query;
+    const newSensorData = new SensorData({
+      sensorId,
+      hiveId,
+      metric,
+      description,
+    });
 
-        try {
-            const deletedData = await SensorData.findByIdAndDelete(sensorId);
-            if (!deletedData) {
-                return res.status(404).json({ message: 'Sensor data not found' });
-            }
-            res.status(200).json({ message: 'Deleted successfully' });
-        } catch (err) {
-            res.status(500).json({ message: err.message });
-        }
+    try {
+      const data = await newSensorData.save();
+      res.status(201).json(data);
+    } catch (err) {
+      res.status(400).json({ message: err.message });
     }
+  }
+  async del(req, res) {
+    const { sensorId } = req.params;
 
+    try {
+      const deletedData = await SensorData.findByIdAndDelete(sensorId);
+      if (!deletedData) {
+        return res.status(404).json({ message: "Sensor data not found" });
+      }
+      res.status(200).json({ message: "Deleted successfully" });
+    } catch (err) {
+      res.status(500).json({ message: err.message });
+    }
+  }
 }
 
-module.exports = SensorController
+module.exports = SensorController;

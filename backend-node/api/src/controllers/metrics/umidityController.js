@@ -1,13 +1,11 @@
-const BaseController = require('./baseController')
+const BaseController = require("./baseController");
 
-const METRIC_TYPE = "umidity"
+const METRIC_TYPE = "umidity";
 
-class UmidityController extends BaseController{
-
-    constructor(){
-        super(METRIC_TYPE)
-    }
-
+class UmidityController extends BaseController {
+  constructor() {
+    super(METRIC_TYPE);
+  }
 }
 
-module.exports = UmidityController
+module.exports = UmidityController;

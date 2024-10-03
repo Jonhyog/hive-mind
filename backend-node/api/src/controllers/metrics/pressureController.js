@@ -1,13 +1,11 @@
-const BaseController = require('./baseController')
+const BaseController = require("./baseController");
 
-const METRIC_TYPE = "pressure"
+const METRIC_TYPE = "pressure";
 
-class PressureController extends BaseController{
-
-    constructor(){
-        super(METRIC_TYPE)
-    }
-
+class PressureController extends BaseController {
+  constructor() {
+    super(METRIC_TYPE);
+  }
 }
 
-module.exports = PressureController
+module.exports = PressureController;

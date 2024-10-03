@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import DashboardLayout from "./components/custom/DashboardLayout";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { HiveProvider } from "./components/custom/HiveProvider";
+import { SensorProvider } from "./components/custom/SensorProvider";
 
 function App() {
   useEffect(() => {
@@ -12,7 +13,9 @@ function App() {
     <>
       <TooltipProvider>
         <HiveProvider>
-          <DashboardLayout />
+          <SensorProvider>
+            <DashboardLayout />
+          </SensorProvider>
         </HiveProvider>
       </TooltipProvider>
     </>

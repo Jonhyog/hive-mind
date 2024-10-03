@@ -1,13 +1,11 @@
-const BaseController = require('./baseController')
+const BaseController = require("./baseController");
 
-const METRIC_TYPE = "noise"
+const METRIC_TYPE = "noise";
 
-class NoiseController extends BaseController{
-
-    constructor(){
-        super(METRIC_TYPE)
-    }
-
+class NoiseController extends BaseController {
+  constructor() {
+    super(METRIC_TYPE);
+  }
 }
 
-module.exports = NoiseController
+module.exports = NoiseController;

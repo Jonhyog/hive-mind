@@ -1,12 +1,11 @@
-const BaseController = require('./baseController');
+const BaseController = require("./baseController");
 
-const METRIC_TYPE = "temperature"
+const METRIC_TYPE = "temperature";
 
-class TemperatureController extends BaseController{
-
-    constructor(){
-        super(METRIC_TYPE)
-    }
+class TemperatureController extends BaseController {
+  constructor() {
+    super(METRIC_TYPE);
+  }
 }
 
-module.exports = TemperatureController
+module.exports = TemperatureController;

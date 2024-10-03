@@ -1,19 +1,16 @@
-const express = require("express")
-const HiveRoute  = require("./hives/hiveRoute")
+const express = require("express");
+const HiveRoute = require("./hives/hiveRoute");
 
-const DEFAULT_ROUTE = "/hive"
+const DEFAULT_ROUTE = "/hive";
 
-class HiveRouter{
+class HiveRouter {
+  constructor(app) {
+    const router = express.Router();
 
-    constructor(app){
+    new HiveRoute(router);
 
-        const router = express.Router()
-        
-        new HiveRoute(router)
-
-        app.use(DEFAULT_ROUTE,router)
-    }
-
+    app.use(DEFAULT_ROUTE, router);
+  }
 }
 
-module.exports = HiveRouter
+module.exports = HiveRouter;

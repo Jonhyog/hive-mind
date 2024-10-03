@@ -1,19 +1,16 @@
-const express = require("express")
-const SensorRoute  = require("./sensors/sensorsRoute")
+const express = require("express");
+const SensorRoute = require("./sensors/sensorsRoute");
 
-const DEFAULT_ROUTE = "/sensor"
+const DEFAULT_ROUTE = "/sensor";
 
-class SensorRouter{
+class SensorRouter {
+  constructor(app) {
+    const router = express.Router();
 
-    constructor(app){
+    new SensorRoute(router);
 
-        const router = express.Router()
-        
-        new SensorRoute(router)
-
-        app.use(DEFAULT_ROUTE,router)
-    }
-
+    app.use(DEFAULT_ROUTE, router);
+  }
 }
 
-module.exports = SensorRouter
+module.exports = SensorRouter;

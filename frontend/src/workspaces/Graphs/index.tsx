@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo } from "react";
+import { useCallback, useContext, useEffect, useMemo } from "react";
 
 import {
   Card,
@@ -30,6 +30,8 @@ import useGetHumidity from "@/hooks/useGetHumidity";
 import { Separator } from "@/components/ui/separator";
 import DatePicker from "@/components/custom/DatePicker";
 import { Label } from "@/components/ui/label";
+import { HiveContext } from "@/components/custom/HiveProvider";
+import { SensorContext } from "@/components/custom/SensorProvider";
 
 const radialConfig = {
   incoming: {
@@ -138,13 +140,21 @@ const MockTable = () => {
 };
 
 const GraphsWorkspace = (): JSX.Element => {
+  const { hive } = useContext(HiveContext);
+  const { temperature, pressure, humidity } = useContext(SensorContext);
+
+  useEffect(() => {
+    console.log(temperature, pressure, humidity);
+  }, [temperature, pressure, humidity]);
+
   const radialHookData = useGetRealtime("/data");
   const setIncoming = useSetRealtime("/data/incoming");
   const setDeparting = useSetRealtime("/data/departing");
 
-  const temperatureData = useGetTemperature("7ae80c", "2ca599");
-  const pressureData = useGetPressure("7ae80c", "d916f5");
-  const humidityData = useGetHumidity("7ae80c", "b43223");
+  // TODO: update hiveId and sensorId to use from context
+  const temperatureData = useGetTemperature(hive, temperature);
+  const pressureData = useGetPressure(hive, pressure);
+  const humidityData = useGetHumidity(hive, humidity);
 
   const processedTemperature = useMemo(() => {
     return temperatureData.map(({ timestamp, value }) => {

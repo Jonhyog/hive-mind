@@ -1,18 +1,17 @@
-const PressureController = require("../../controllers/metrics/pressureController")
+const PressureController = require("../../controllers/metrics/pressureController");
 
-const DEFAULT_ROUTE = "/pressure"
+const DEFAULT_ROUTE = "/pressure";
 
-class PressureRoute{
+class PressureRoute {
+  constructor(router) {
+    this.controller = new PressureController();
 
-    constructor(router){
-
-        this.controller = new PressureController()
-
-        router.route(DEFAULT_ROUTE)
-            .get((req, res) => this.controller.get(req, res))
-            .post((req, res) => this.controller.post(req, res))
-            .delete((req, res) => this.controller.del(req, res));
-    }
+    router
+      .route(DEFAULT_ROUTE)
+      .get((req, res) => this.controller.get(req, res))
+      .post((req, res) => this.controller.post(req, res))
+      .delete((req, res) => this.controller.del(req, res));
+  }
 }
 
-module.exports = PressureRoute
+module.exports = PressureRoute;
