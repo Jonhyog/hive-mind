@@ -8,7 +8,7 @@ class BaseController {
 
   async get(req, res) {
     const { limit, startDate, endDate, sensorId, hiveId, value, timestamp } =
-      req.query;
+      req.body;
 
     try {
       let filter = { metricType: this.metricType };
@@ -40,7 +40,7 @@ class BaseController {
     }
   }
   async post(req, res) {
-    const { sensorId, hiveId, value, timestamp } = req.query;
+    const { sensorId, hiveId, value, timestamp } = req.body;
     const newSensorData = new this.sensorData({
       sensorId,
       hiveId,

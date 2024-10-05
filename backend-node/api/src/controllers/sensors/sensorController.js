@@ -3,7 +3,7 @@ const MetricsData = require("../../models/metricsModel");
 
 class SensorController {
   async get(req, res) {
-    const { hiveId, metricType } = req.query;
+    const { hiveId, metricType } = req.body;
 
     try {
       let filter = {};
@@ -51,7 +51,7 @@ class SensorController {
     }
   }
   async post(req, res) {
-    const { sensorId, hiveId, metric, description } = req.query;
+    const { sensorId, hiveId, metric, description } = req.body;
     const newSensorData = new SensorData({
       sensorId,
       hiveId,

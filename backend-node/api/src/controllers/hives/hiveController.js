@@ -2,7 +2,7 @@ const SensorData = require("../../models/hivesModel");
 
 class HiveController {
   async get(req, res) {
-    const { hiveId, location, description } = req.query;
+    const { hiveId, location, description } = req.body;
 
     try {
       let filter = {};
@@ -23,7 +23,7 @@ class HiveController {
     }
   }
   async post(req, res) {
-    const { hiveId, location, description } = req.query;
+    const { hiveId, location, description } = req.body;
     const newSensorData = new SensorData({
       hiveId,
       location,
