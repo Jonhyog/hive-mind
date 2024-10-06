@@ -117,7 +117,7 @@ class SensorsManager:
             sample = sound.read_u16()
 
             signal_max = max(sample, signal_max)
-            signal_min = max(sample, signal_min)
+            signal_min = min(sample, signal_min)
 
         peak_to_peak = (3.3 / 65535) * (signal_max - signal_min)
         peak_to_peak_rms = peak_to_peak * 0.707
