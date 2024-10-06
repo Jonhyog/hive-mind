@@ -1,0 +1,2 @@
+hive_id: 45117bf0
+sensor_id: 28336a1b
