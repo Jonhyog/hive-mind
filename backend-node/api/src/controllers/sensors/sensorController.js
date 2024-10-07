@@ -8,16 +8,19 @@ class SensorController {
     try {
       let filter = {};
       if (hiveId) {
-        filter.hiveId = hiveId;
+        filter.hiveId = { hiveId };
       }
 
       if (metricType) {
-        filter.metricType = { $in: [metricType] };
+        filter.metricType = { metricType: { $in: [metricType] } };
       }
+      
+      const filterValues = Object.values(filter);
+      const conditions = filterValues.length > 0 ? {$and: filterValues} : {};
 
       const data = await MetricsData.aggregate([
         {
-          $match: filter,
+          $match: conditions
         },
         {
           $group: {
