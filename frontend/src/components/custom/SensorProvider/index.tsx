@@ -3,9 +3,11 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useMemo,
   useState,
 } from "react";
 import { HiveContext } from "../HiveProvider";
+import useGetSensors from "@/hooks/useGetSensors";
 
 type SensorInput = {
   temperature: string;
@@ -36,6 +38,8 @@ const SensorProvider = ({
   children: JSX.Element;
 }): JSX.Element => {
   const { hive } = useContext(HiveContext);
+  const vars = useMemo(() => { return { hiveId: hive }}, [hive]);
+  const sensors = useGetSensors(vars);
 
   const [temperature, setTemperature] = useState("");
   const [pressure, setPressure] = useState("");
@@ -50,56 +54,42 @@ const SensorProvider = ({
     []
   );
 
-  const data: SensorContextAPI = {
-    pressure,
-    temperature,
-    humidity,
-    setSensorContext,
-  };
+  const data = useMemo((): SensorContextAPI => {
+    return {
+      pressure,
+      temperature,
+      humidity,
+      setSensorContext,
+    }
+  }, [humidity, pressure, setSensorContext, temperature]);
 
   useEffect(() => {
-    const setFirstSensor = async () => {
-      const url = `http://localhost:3003/sensor?hiveId=${hive}`;
-      try {
-        const response = await fetch(url);
-        const result = await response.json();
+    if (sensors.length === 0) {
+      return;
+    }
 
-        if (result.length === 0) {
-          return;
-        }
-        console.log(result);
+    const temperatureSensors = sensors.filter(
+      (element) => "temperature" in element.metricsType
+    );
+    const pressureSensors = sensors.filter(
+      (element) => "pressure" in element.metricsType
+    );
+    const humiditySensors = sensors.filter(
+      (element) => "humidity" in element.metricsType
+    );
 
-        const temperatureSensors = result.filter(
-          (element) => "temperature" in element.metricType
-        );
-        const pressureSensors = result.filter(
-          (element) => "pressure" in element.metricType
-        );
-        const humiditySensors = result.filter(
-          (element) => "humidity" in element.metricType
-        );
+    if (temperatureSensors.length > 0) {
+      setTemperature(temperatureSensors[0].sensorId);
+    }
 
-        if (temperatureSensors.length > 0) {
-          setTemperature(temperatureSensors[0].sensorId);
-        }
+    if (pressureSensors.length > 0) {
+      setPressure(pressureSensors[0].sensorId);
+    }
 
-        if (pressureSensors.length > 0) {
-          setPressure(pressureSensors[0].sensorId);
-        }
-
-        if (humiditySensors.length > 0) {
-          setHumidity(humiditySensors[0].sensorId);
-        }
-      } catch (error) {
-        console.log(
-          "Failed to fetch sensor while setting initial context: ",
-          error
-        );
-      }
-    };
-
-    setFirstSensor();
-  }, [hive]);
+    if (humiditySensors.length > 0) {
+      setHumidity(humiditySensors[0].sensorId);
+    }
+  }, [sensors]);
 
   useEffect(() => {
     console.log("Sensor context changed to: ", temperature, pressure, humidity);

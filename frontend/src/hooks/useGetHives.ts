@@ -1,11 +1,36 @@
 import { useEffect, useState } from "react";
 
-const useGetHives = () => {
-  const [hives, setHives] = useState([]);
+type GetHivesVariables = {
+  hiveId?: string;
+  location?: string;
+  description?: string;
+};
+
+type GetHivesResponse = {
+  _id: string;
+  hiveId: string;
+  location: string;
+  description?: string;
+  __v: number;
+};
+
+const useGetHives = (vars: GetHivesVariables) => {
+  const [hives, setHives] = useState<GetHivesResponse[]>([]);
 
   useEffect(() => {
-    const url = "http://localhost:3003/hive";
+    const url = new URL("http://localhost:3003/hive");
     const getHives = async () => {
+      const filteredEntries = Object.fromEntries(
+        Object.entries(vars ?? {}).filter(
+          ([, value]) => value != null && value !== ""
+        )
+      );
+
+      Object.entries(filteredEntries).forEach(([key, value]) => {
+        url.searchParams.append(key, value)
+      }
+      );
+
       try {
         const response = await fetch(url);
         const result = await response.json();
@@ -17,10 +42,7 @@ const useGetHives = () => {
     };
 
     getHives();
-    const interval = setInterval(getHives, 60 * 1000);
-
-    return () => clearInterval(interval);
-  }, []);
+  }, [vars]);
 
   return hives;
 };

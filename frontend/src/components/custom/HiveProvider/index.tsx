@@ -1,38 +1,29 @@
-import { createContext, useEffect, useState } from "react";
+import useGetHives from "@/hooks/useGetHives";
+import { createContext, useEffect, useMemo, useState } from "react";
 
 type HiveContextAPI = {
-  hive: string;
-  setHiveContext: (value: string) => void;
+  hive?: string;
+  setHiveContext?: (value: string) => void;
 };
 
-const HiveContext = createContext<HiveContextAPI | undefined>(undefined);
+const HiveContext = createContext<HiveContextAPI>({});
 
 const HiveProvider = ({ children }: { children: JSX.Element }): JSX.Element => {
   const [hive, setHive] = useState("");
-  const data: HiveContextAPI = {
-    hive: hive,
-    setHiveContext: setHive,
-  };
-
-  useEffect(() => {
-    const setFirstHive = async () => {
-      const url = "http://localhost:3003/hive";
-      try {
-        const response = await fetch(url);
-        const result = await response.json();
-    
-        if (result.length > 0) {
-          setHive(result[0].hiveId);
-          return
-        }
-    
-      } catch (error) {
-        console.log("Failed to fetch hive data while setting initial context: ", error);
-      }
+  const data = useMemo(() => {
+    return {
+      hive: hive,
+      setHiveContext: setHive,
     };
-
-    setFirstHive();
-  }, []);
+  }, [hive]);
+  const vars = useMemo(() => ({}), []);
+  const hivesData = useGetHives(vars);
+  
+  useEffect(() => {
+    if (hivesData.length > 0) {
+      setHive(hivesData[0].hiveId);
+    }
+  }, [hivesData]);
 
   useEffect(() => {
     console.log("Hive context changed to: ", hive);

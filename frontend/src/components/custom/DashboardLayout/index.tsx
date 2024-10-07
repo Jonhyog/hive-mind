@@ -23,14 +23,15 @@ const WorkspaceLabels = {
 
 const SelectHive = () => {
   const { hive, setHiveContext } = useContext(HiveContext);
-  const hivesData = useGetHives();
+  const hivesData = useGetHives({});
 
   const handleHiveChange = (value: string) => {
-    setHiveContext(value);
+    if (setHiveContext != null) {
+      setHiveContext(value);
+    }
   }
 
   useEffect(() => {
-    console.log(hivesData);
   }, [hivesData]);
 
   return (

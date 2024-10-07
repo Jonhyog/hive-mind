@@ -3,7 +3,7 @@ const MetricsData = require("../../models/metricsModel");
 
 class SensorController {
   async get(req, res) {
-    const { hiveId, metricType } = req.body;
+    const { hiveId, metricType } = req.query;
 
     try {
       let filter = {};
@@ -14,13 +14,15 @@ class SensorController {
       if (metricType) {
         filter.metricType = { metricType: { $in: [metricType] } };
       }
-      
+
       const filterValues = Object.values(filter);
-      const conditions = filterValues.length > 0 ? {$and: filterValues} : {};
+      const conditions = filterValues.length > 0 ? { $and: filterValues } : {};
+
+      console.log(req.params);
 
       const data = await MetricsData.aggregate([
         {
-          $match: conditions
+          $match: conditions,
         },
         {
           $group: {

@@ -8,7 +8,7 @@ class BaseController {
 
   async get(req, res) {
     const { limit, startDate, endDate, sensorId, hiveId, value, timestamp } =
-      req.body;
+      req.query;
 
     try {
       let filter = { metricType: this.metricType };
