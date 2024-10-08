@@ -45,5 +45,5 @@ const useGetSensors = (vars: GetSensorsVariables): GetSensorsResponse[] => {
   return sensors;
 };
 
-export type { GetSensorsVariables, GetSensorsResponse };
+export type { GetSensorsVariables, GetSensorsResponse, AllowedMetrics };
 export default useGetSensors;

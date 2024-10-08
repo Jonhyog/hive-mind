@@ -18,21 +18,17 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
+import { HiveContext } from "@/components/custom/HiveProvider";
+import { SensorContext } from "@/components/custom/SensorProvider";
+import SensorSelectionForm from "@/components/custom/SensorSelectionForm";
 import LineChart from "@/components/custom/LineChart";
 import CustomRadialChart from "@/components/custom/RadialChart";
 
-import { Button } from "@/components/ui/button";
 import useGetRealtime from "@/hooks/useGetRealtime";
 import useSetRealtime from "@/hooks/useSetRealtime";
 import useGetTemperature from "@/hooks/useGetTemperature";
 import useGetPressure from "@/hooks/useGetPressure";
 import useGetHumidity from "@/hooks/useGetHumidity";
-import { Separator } from "@/components/ui/separator";
-import DatePicker from "@/components/custom/DatePicker";
-import { Label } from "@/components/ui/label";
-import { HiveContext } from "@/components/custom/HiveProvider";
-import { SensorContext } from "@/components/custom/SensorProvider";
-import SensorSelectionForm from "@/components/custom/SensorSelectionForm";
 
 const radialConfig = {
   incoming: {
