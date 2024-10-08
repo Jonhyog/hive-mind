@@ -9,13 +9,13 @@ class SensorsManager:
     def __init__(self):
         print("Setting sensors")
         self.bme680 = self._set_bme680()
-        self.sound = self.__set_sound_sensor()
+        self.noise = self.__set_noise_sensor()
         self.sensors = {
             # 'proximity':
-            'sound': {'object': self.sound, 'read_method': self.__read_sound},
+            'noise': {'object': self.noise, 'read_method': self.__read_noise},
             'temperature': {'object': self.bme680, 'read_method': self.__read_temperature},
             'pressure': {'object': self.bme680, 'read_method': self.__read_pressure},
-            'humidity': {'object': self.bme680, 'read_method': self.__read_humidity},
+            'umidity': {'object': self.bme680, 'read_method': self.__read_humidity},
             # 'gas':
         }
     
@@ -38,11 +38,11 @@ class SensorsManager:
         return bme680
     
     # Inicialização do microfone
-    def __set_sound_sensor(self):    
+    def __set_noise_sensor(self):    
         return ADC(Pin(28))
     
     # Leituras
-    def start_reading(self, zone_offset, hive_id, sensor_id):        
+    def start_reading(self, zone_offset, hive_id, bme_id, noise_id):        
         while True:
             gc.collect()
             print("Starting sensors reading:")
@@ -67,7 +67,8 @@ class SensorsManager:
             gc.collect()
             ids = {
                 "hive_id": hive_id,
-                "sensor_id": sensor_id
+                "bme_id": bme_id,
+                'noise_id': noise_id
             }
             print("Writing data")
             api.write_data(readings, ids, timestamp)
@@ -108,13 +109,13 @@ class SensorsManager:
         else:
             return bme.humidity
     
-    def __read_sound(self, sound):
+    def __read_noise(self, noise):
         start_time = time.ticks_ms()
         sample_window = 50
 
         signal_max, signal_min = 0, 65535
         while (time.ticks_diff(time.ticks_ms(), start_time) < sample_window):
-            sample = sound.read_u16()
+            sample = noise.read_u16()
 
             signal_max = max(sample, signal_max)
             signal_min = min(sample, signal_min)

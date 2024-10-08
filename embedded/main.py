@@ -26,9 +26,9 @@ current_time_local = time.localtime(current_time_sec + timezone_offset)
 print("Local Time:", current_time_local)
 print()
 
-# Obtém hive_id e sensor_id, ou cria se não houver
-hive_id, sensor_id = get_ids('ids.txt')
+# Obtém hive_id, bme_id e noise_id, ou cria se não houver
+hive_id, bme_id, noise_id = get_ids('ids.txt')
     
 # Instanciação das Classes Gerenciadoras
 sensors_manager = SensorsManager()
-sensors_manager.start_reading(timezone_offset, hive_id, sensor_id)
+sensors_manager.start_reading(timezone_offset, hive_id, bme_id, noise_id)
