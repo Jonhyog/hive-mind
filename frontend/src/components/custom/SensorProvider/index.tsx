@@ -69,13 +69,13 @@ const SensorProvider = ({
     }
 
     const temperatureSensors = sensors.filter(
-      (element) => "temperature" in element.metricsType
+      (element) => element.metricsType.includes("temperature")
     );
     const pressureSensors = sensors.filter(
-      (element) => "pressure" in element.metricsType
+      (element) => element.metricsType.includes("pressure")
     );
     const humiditySensors = sensors.filter(
-      (element) => "humidity" in element.metricsType
+      (element) => element.metricsType.includes("umidity")
     );
 
     if (temperatureSensors.length > 0) {
@@ -89,7 +89,7 @@ const SensorProvider = ({
     if (humiditySensors.length > 0) {
       setHumidity(humiditySensors[0].sensorId);
     }
-  }, [sensors]);
+  }, [hive, sensors]);
 
   useEffect(() => {
     console.log("Sensor context changed to: ", temperature, pressure, humidity);

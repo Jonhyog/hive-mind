@@ -32,6 +32,7 @@ import DatePicker from "@/components/custom/DatePicker";
 import { Label } from "@/components/ui/label";
 import { HiveContext } from "@/components/custom/HiveProvider";
 import { SensorContext } from "@/components/custom/SensorProvider";
+import SensorSelectionForm from "@/components/custom/SensorSelectionForm";
 
 const radialConfig = {
   incoming: {
@@ -199,7 +200,7 @@ const GraphsWorkspace = (): JSX.Element => {
   return (
     <div className="flex flex-row gap-4">
       {/* Place Control Form and Preview table in diferent forms */}
-      <div className="flex flex-col gap-4 w-1/4">
+      <div className="flex flex-col gap-4 w-1/3">
         <Card>
           <CardHeader className="flex flex-col gap-2">
             <CardTitle>Preview Selection</CardTitle>
@@ -210,28 +211,7 @@ const GraphsWorkspace = (): JSX.Element => {
             {/* <Button onClick={handleDepartingUpdate}>Generate Departing</Button> */}
           </CardHeader>
         </Card>
-        <div className="flex flex-col flex-1 border rounded-lg p-4">
-          <MockTable />
-          <Separator className="my-4" />
-          <form className="flex flex-col flex-1 w-full items-start gap-4">
-            <fieldset className="flex flex-col flex-1 w-full justify-between gap-2 p-1">
-              <div className="flex flex-row flex-1 justify-between gap-2">
-                <div className="flex flex-col justify-start gap-2 flex-1">
-                  <Label htmlFor="start-time">Initial Date</Label>
-                  <DatePicker id="start-time" />
-                </div>
-                <div className="flex flex-col justify-start gap-2 flex-1">
-                  <Label htmlFor="start-time">Final Date</Label>
-                  <DatePicker id="start-time" />
-                </div>
-                {/* Add Sensor Picker for temperature, pressure and humidity */}
-              </div>
-              <Button onClick={handleDepartingUpdate}>
-                Generate Departing
-              </Button>
-            </fieldset>
-          </form>
-        </div>
+        <SensorSelectionForm />
       </div>
       <div className="flex flex-col flex-1 gap-4">
         <div className="flex flex-row flex-1 gap-4">
