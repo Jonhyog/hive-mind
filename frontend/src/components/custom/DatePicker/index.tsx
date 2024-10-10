@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 import { format } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
@@ -12,9 +12,21 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
-const DatePicker = ({ id }) => {
+const DatePicker = ({ onChange }: { onChange?: (values: Date | undefined) => void }) => {
   const [date, setDate] = useState<Date>()
 
+  const handleChange = useCallback((value: Date | undefined) => {
+    if (!value) {
+      return;
+    }
+
+    if (onChange) {
+      onChange(value);
+    }
+
+    setDate(value);
+  }, [onChange]);
+  
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -31,10 +43,9 @@ const DatePicker = ({ id }) => {
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0">
         <Calendar
-          id={id}
           mode="single"
           selected={date}
-          onSelect={setDate}
+          onSelect={handleChange}
           initialFocus
         />
       </PopoverContent>

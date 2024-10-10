@@ -1,12 +1,29 @@
 import { useEffect, useState } from "react";
 
-const useGetHumidity = (hiveId: string, sensorId: string) => {
+type GetHumidityOptions = {
+  limit?: number;
+  startDate?: Date;
+  endDate?: Date;
+};
+
+const useGetHumidity = (hiveId: string, sensorId: string, options: GetHumidityOptions) => {
   const [humidity, setHumidity] = useState([]);
 
   useEffect(() => {
-    const url = `http://localhost:3003/metrics/umidity?hiveId=${hiveId}&sensorId=${sensorId}`;
+    const url = new URL("http://localhost:3003/metrics/umidity");
     const getHumidity = async () => {
       try {
+        const filteredOptions = Object.entries(options).filter(
+          ([, value]) => value != null
+        );
+
+        filteredOptions.forEach(([key, value]) =>
+          url.searchParams.append(key, value.toString())
+        );
+        
+        url.searchParams.append("hiveId", hiveId);
+        url.searchParams.append("sensorId", sensorId);
+        
         const response = await fetch(url);
         const result = await response.json();
 
@@ -20,7 +37,7 @@ const useGetHumidity = (hiveId: string, sensorId: string) => {
     const interval = setInterval(getHumidity, 60 * 1000);
 
     return () => clearInterval(interval);
-  }, [hiveId, sensorId]);
+  }, [hiveId, options, sensorId]);
 
   return humidity;
 };
