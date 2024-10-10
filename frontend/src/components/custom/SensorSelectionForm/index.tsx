@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 
@@ -12,6 +11,7 @@ import { SensorContext } from "../SensorProvider";
 import { DataTable } from "../DataTable";
 import { ColumnDef } from "@tanstack/react-table";
 import DatePicker from "../DatePicker";
+import DownloadCSV from "../DownloadCSV";
 
 export type SensorData = {
   timestamp: string;
@@ -20,6 +20,8 @@ export type SensorData = {
   humidity: number;
   noise: number;
 };
+
+const header = ["timestamp", "temperature", "pressure", "humidity", "noise"];
 
 const columns: ColumnDef<SensorData>[] = [
   {
@@ -44,21 +46,21 @@ const columns: ColumnDef<SensorData>[] = [
     accessorKey: "pressure",
     header: () => <div className="text-center">Pressure</div>,
     cell: ({ row }) => {
-      return <div className="text-center">{row.getValue("temperature")}</div>;
+      return <div className="text-center">{row.getValue("pressure")}</div>;
     },
   },
   {
     accessorKey: "humidity",
     header: () => <div className="text-center">Humidity</div>,
     cell: ({ row }) => {
-      return <div className="text-center">{row.getValue("temperature")}</div>;
+      return <div className="text-center">{row.getValue("humidity")}</div>;
     },
   },
   {
     accessorKey: "noise",
     header: () => <div className="text-center">Noise</div>,
     cell: ({ row }) => {
-      return <div className="text-center">{row.getValue("temperature")}</div>;
+      return <div className="text-center">{row.getValue("noise")}</div>;
     },
   },
 ];
@@ -144,6 +146,8 @@ const SensorSelectionForm = (): JSX.Element => {
     })
   }, []);
 
+  console.log()
+
   return (
     <div className="flex flex-col flex-1 border rounded-lg p-4">
       <DataTable columns={columns} data={tableData} />
@@ -161,8 +165,9 @@ const SensorSelectionForm = (): JSX.Element => {
               <DatePicker onChange={onChangeEndDate}/>
             </div>
           </div>
-          <div className="flex flex-1 flex-col justify-stretch gap-4">
-            <Button>Export as CSV</Button>
+          <div className="flex flex-1 flex-col justify-stretch">
+            <DownloadCSV fileName="report" header={header} data={tableData}/>
+            {/* <Button>Export as CSV</Button> */}
           </div>
           {/* <Button onClick={handleDepartingUpdate}>Generate Departing</Button> */}
         </fieldset>
