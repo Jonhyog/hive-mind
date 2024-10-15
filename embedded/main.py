@@ -4,6 +4,8 @@ from sensors_manager import SensorsManager
 import time
 import ntptime
 
+LOCATION = 'Test'
+
 connect_to_wifi()
 
 # Ajuste do horário
@@ -27,7 +29,7 @@ print("Local Time:", current_time_local)
 print()
 
 # Obtém hive_id, bme_id e noise_id, ou cria se não houver
-hive_id, bme_id, noise_id = get_ids('ids.txt')
+hive_id, bme_id, noise_id = get_ids('ids.txt', LOCATION)
     
 # Instanciação das Classes Gerenciadoras
 sensors_manager = SensorsManager()

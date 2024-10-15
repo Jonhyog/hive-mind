@@ -2,7 +2,7 @@ import gc
 import ujson
 import urequests
 
-url = 'http://localhost:3003'
+url = 'http://143.106.24.56:3003'
 
 def write_data(readings, ids, timestamp):
     headers = {'Content-Type': 'application/json'}
@@ -18,7 +18,7 @@ def write_data(readings, ids, timestamp):
         response = urequests.post(f'{url}/metrics/{key}', data=ujson.dumps(data), headers=headers)
         response.close()
 
-        if response.status_code == 200:
+        if response.status_code == 201:
             print('Data written successfully')
         else:
             print('Failed to write data:', response.status_code)
@@ -38,10 +38,13 @@ def write_hiveId(hiveId, location='', description=''):
     response = urequests.post(f'{url}/hive', data=ujson.dumps(data), headers=headers)
     response.close()
 
-    if response.status_code == 200:
+    if response.status_code == 201:
         print('Hive ID registered successfully')
+        return True
     else:
         print('Failed to register hive ID:', response.status_code)
+        return False
+
 
 def write_sensorId(sensorId, sensor_type, description=''):
     headers = {'Content-Type': 'application/json'}
@@ -55,7 +58,9 @@ def write_sensorId(sensorId, sensor_type, description=''):
     response = urequests.post(f'{url}/sensor', data=ujson.dumps(data), headers=headers)
     response.close()
 
-    if response.status_code == 200:
+    if response.status_code == 201:
         print('Sensor ID registered successfully, sensor is of type:', sensor_type)
+        return True
     else:
         print(f'Failed to register sensor ID: {response.status_code}, sensor is of type: {sensor_type}')
+        return False

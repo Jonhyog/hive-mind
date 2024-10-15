@@ -6,7 +6,7 @@ import api
 def generate_short_uuid():
     return ubinascii.hexlify(urandom.getrandbits(32).to_bytes(8, 'little')).decode()[:8]
 
-def get_ids(file_name):
+def get_ids(file_name, location):
     hive_id = None
     bme_id = None
     noise_id = None
@@ -24,14 +24,15 @@ def get_ids(file_name):
         bme_id = generate_short_uuid()
         noise_id = generate_short_uuid()
         # Register new ids on db
-        api.write_hiveId(hive_id)
-        api.write_sensorId(bme_id, 'BME')
-        api.write_sensorId(noise_id, 'Noise')
+        hive_registered = api.write_hiveId(hive_id, location)
+        bme_registered = api.write_sensorId(bme_id, 'BME')
+        noise_registered = api.write_sensorId(noise_id, 'Noise')
         # Save new ids on .txt file
-        with open(file_name, 'w') as file:
-            file.write(f'hive_id: {hive_id}\n')
-            file.write(f'bme_id: {bme_id}\n')
-            file.write(f'noise_id: {noise_id}\n')
+        if hive_registered and bme_registered and noise_registered:
+            with open(file_name, 'w') as file:
+                file.write(f'hive_id: {hive_id}\n')
+                file.write(f'bme_id: {bme_id}\n')
+                file.write(f'noise_id: {noise_id}\n')
         print()
 
     return hive_id, bme_id, noise_id

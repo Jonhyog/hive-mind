@@ -10,6 +10,7 @@ class SensorsManager:
         print("Setting sensors")
         self.bme680 = self._set_bme680()
         self.noise = self.__set_noise_sensor()
+        print()
         self.sensors = {
             # 'proximity':
             'noise': {'object': self.noise, 'read_method': self.__read_noise},
@@ -34,11 +35,11 @@ class SensorsManager:
             if bme680 is None:
                 print("Trying again in 3 seconds")
                 time.sleep(3)
-        print()
         return bme680
     
     # Inicialização do microfone
-    def __set_noise_sensor(self):    
+    def __set_noise_sensor(self):
+        print("Noise sensor set successfully")
         return ADC(Pin(28))
     
     # Leituras
