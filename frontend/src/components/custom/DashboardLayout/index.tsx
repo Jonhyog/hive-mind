@@ -31,8 +31,8 @@ const DashboardLayout = (): JSX.Element => {
   }, []);
 
   return (
-    <div className="grid h-screen w-full pl-[56px]">
-      <aside className="inset-y fixed  left-0 z-20 flex h-full flex-col border-r">
+    <div className="flex h-screen w-full pl-[56px]">
+      <aside className="inset-y fixed left-0 z-20 flex h-screen flex-col border-r bg-primary-foreground">
         <div className="border-b p-2">
           <Button variant="outline" size="icon" aria-label="Home">
             <Icon iconNode={beeHive} />
@@ -85,12 +85,12 @@ const DashboardLayout = (): JSX.Element => {
           </Tooltip>
         </nav>
       </aside>
-      <div className="flex flex-col">
-        <header className="sticky top-0 z-10 flex h-[57px] justify-between items-center gap-1 border-b bg-background px-4">
+      <div className="h-full w-screen flex flex-col">
+        <header className="fixed w-screen top-0 z-10 flex h-[57px] justify-between items-center gap-1 border-b bg-primary-foreground px-4 pr-[72px]">
           <h1 className="text-xl font-semibold">{isSelected}</h1>
           <OptionsSelectionPopover />
         </header>
-        <div className="flex flex-col flex-1 p-4">
+        <div className="flex flex-col flex-1 w-full p-4 mt-[57px] overflow-auto">
             {WorkspaceLabels.graphs === isSelected && <GraphsWorkspace />}
             {WorkspaceLabels.monitoring === isSelected && <VideoMonitoringWorkspace />}
         </div>

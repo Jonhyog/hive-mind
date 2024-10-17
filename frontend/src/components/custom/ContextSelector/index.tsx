@@ -1,14 +1,20 @@
 import { Label } from "@/components/ui/label";
-import { SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Select } from "@radix-ui/react-select";
-import { memo, useCallback, useEffect, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useState } from "react";
 
 type ContextSelectorProps = {
-    label?: string;
-    options: string[];
-    selected: string;
-    onSelect?: (value: string) => void;
-}
+  label?: string;
+  options: string[];
+  selected: string;
+  onSelect?: (value: string) => void;
+};
 
 const ContextSelector = ({
   label,
@@ -30,19 +36,10 @@ const ContextSelector = ({
 
   useEffect(() => {
     setSensor(selected);
-  }, [selected])
+  }, [selected]);
 
-  useEffect(() => {
-    console.log("Inside: ", options);
-    console.log(selected);
-  }, [options, selected]);
-
-  // TODO: if no options are received
-  // show no notice instead of select
-
-  return (
-    <div className="flex flex-1 flex-col gap-2">
-      <Label className="text-sm text-muted-foreground">{label}</Label>
+  const select = useMemo(() => {
+    return (
       <Select value={sensor} onValueChange={onChange}>
         <SelectTrigger className="flex-1">
           <SelectValue placeholder="Select a sensor to preview" />
@@ -55,6 +52,18 @@ const ContextSelector = ({
           </SelectGroup>
         </SelectContent>
       </Select>
+    );
+  }, [sensor, onChange, options]);
+
+  return (
+    <div className="flex flex-1 flex-col gap-2">
+      <Label className="text-sm text-muted-foreground">{label}</Label>
+      {sensor !== "" && select}
+      {sensor === "" && (
+        <p className="text-sm text-muted-foreground">
+          No available options
+        </p>
+      )}
     </div>
   );
 };

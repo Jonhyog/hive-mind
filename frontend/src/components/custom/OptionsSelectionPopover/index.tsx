@@ -1,4 +1,4 @@
-import { useCallback, useContext, useMemo } from "react";
+import { useContext, useMemo } from "react";
 
 import { Router } from "lucide-react";
 
@@ -23,16 +23,14 @@ const avaliableMetrics = [
   "temperature",
   "pressure",
   "umidity",
+  "noise",
 ] as AllowedMetrics[];
 
 const getHivesOptions = {};
 
 const OptionsSelectionPopover = (): JSX.Element => {
   const { hive, setHiveContext } = useContext(HiveContext);
-  // TODO: Change setSensorContext to [setTemperatureContext, setPressureContext, setHumidity]
-  // then pass them directly to the ContextSelector to avoid clutter from creating one function
-  // to set each metric
-  const { temperature, pressure, humidity, setSensorContext } =
+  const { temperature, pressure, humidity, noise, setSensorContext } =
     useContext(SensorContext);
   const hivesData = useGetHives(getHivesOptions);
 
@@ -56,66 +54,6 @@ const OptionsSelectionPopover = (): JSX.Element => {
   const hiveOptions = useMemo(
     () => hivesData.map((element) => element.hiveId),
     [hivesData]
-  );
-
-  const onTemperatureChange = useCallback(
-    (value: string) => {
-      if (value && temperature && pressure && humidity && setSensorContext) {
-        const prevContext = {
-          temperature,
-          pressure,
-          humidity,
-        };
-
-        const newContext = {
-          ...prevContext,
-          ["temperature"]: value,
-        };
-
-        setSensorContext(newContext);
-      }
-    },
-    [humidity, pressure, setSensorContext, temperature]
-  );
-
-  const onPressureChange = useCallback(
-    (value: string) => {
-      if (value && temperature && pressure && humidity && setSensorContext) {
-        const prevContext = {
-          temperature,
-          pressure,
-          humidity,
-        };
-
-        const newContext = {
-          ...prevContext,
-          ["pressure"]: value,
-        };
-
-        setSensorContext(newContext);
-      }
-    },
-    [humidity, pressure, setSensorContext, temperature]
-  );
-
-  const onHumidityChange = useCallback(
-    (value: string) => {
-      if (value && temperature && pressure && humidity && setSensorContext) {
-        const prevContext = {
-          temperature,
-          pressure,
-          humidity,
-        };
-
-        const newContext = {
-          ...prevContext,
-          ["humidity"]: value,
-        };
-
-        setSensorContext(newContext);
-      }
-    },
-    [humidity, pressure, setSensorContext, temperature]
   );
 
   return (
@@ -156,19 +94,25 @@ const OptionsSelectionPopover = (): JSX.Element => {
                 label="Temperature:"
                 options={sensorOptions.temperature}
                 selected={temperature ?? ""}
-                onSelect={onTemperatureChange}
+                onSelect={setSensorContext?.setTemperature}
               />
               <ContextSelector
                 label="Pressure:"
                 options={sensorOptions.pressure}
                 selected={pressure ?? ""}
-                onSelect={onPressureChange}
+                onSelect={setSensorContext?.setPressure}
               />
               <ContextSelector
                 label="Humidity:"
                 options={sensorOptions.umidity}
                 selected={humidity ?? ""}
-                onSelect={onHumidityChange}
+                onSelect={setSensorContext?.setHumidity}
+              />
+              <ContextSelector
+                label="Noise:"
+                options={sensorOptions.noise}
+                selected={noise ?? ""}
+                onSelect={setSensorContext?.setNoise}
               />
             </div>
           </div>

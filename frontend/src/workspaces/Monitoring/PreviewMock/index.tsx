@@ -10,7 +10,7 @@ import { RefreshCcw } from "lucide-react";
 
 const PreviewMock = (): JSX.Element => {
   return (
-    <div className="relative flex flex-1 h-full min-h-[50vh] flex-col rounded-xl bg-muted/50 p-4">
+    <div className="relative flex flex-1 h-full min-h-[50vh] flex-col rounded-xl bg-muted p-4">
       <Badge variant="outline" className="absolute left-3 top-3">
         Original Image
       </Badge>

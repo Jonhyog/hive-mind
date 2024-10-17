@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useMemo } from "react";
+import { useContext, useEffect, useMemo } from "react";
 
 import {
   Card,
@@ -12,24 +12,11 @@ import { HiveContext } from "@/components/custom/HiveProvider";
 import { SensorContext } from "@/components/custom/SensorProvider";
 import SensorSelectionForm from "@/components/custom/SensorSelectionForm";
 import LineChart from "@/components/custom/LineChart";
-import CustomRadialChart from "@/components/custom/RadialChart";
 
-import useGetRealtime from "@/hooks/useGetRealtime";
-import useSetRealtime from "@/hooks/useSetRealtime";
 import useGetTemperature from "@/hooks/useGetTemperature";
 import useGetPressure from "@/hooks/useGetPressure";
 import useGetHumidity from "@/hooks/useGetHumidity";
-
-const radialConfig = {
-  incoming: {
-    label: "Incoming",
-    color: "hsl(var(--chart-1))",
-  },
-  departing: {
-    label: "Departing",
-    color: "hsl(var(--chart-2))",
-  },
-} satisfies ChartConfig;
+import useGetNoise from "@/hooks/useGetNoise";
 
 const temperatureConfig = {
   visitors: {
@@ -61,24 +48,30 @@ const humidityConfig = {
   },
 } satisfies ChartConfig;
 
+const noiseConfig = {
+  visitors: {
+    label: "Visitors",
+  },
+  noise: {
+    label: "Noise",
+    color: "hsl(var(--chart-4))",
+  },
+} satisfies ChartConfig;
+
 const getDataOptions = {};
 
 const GraphsWorkspace = (): JSX.Element => {
   const { hive } = useContext(HiveContext);
-  const { temperature, pressure, humidity } = useContext(SensorContext);
+  const { temperature, pressure, humidity, noise } = useContext(SensorContext);
 
   useEffect(() => {
     console.log(temperature, pressure, humidity);
   }, [temperature, pressure, humidity]);
 
-  const radialHookData = useGetRealtime("/data");
-  const setIncoming = useSetRealtime("/data/incoming");
-  const setDeparting = useSetRealtime("/data/departing");
-
-  // TODO: update hiveId and sensorId to use from context
   const temperatureData = useGetTemperature(hive, temperature, getDataOptions);
   const pressureData = useGetPressure(hive, pressure, getDataOptions);
   const humidityData = useGetHumidity(hive, humidity, getDataOptions);
+  const noiseData = useGetNoise(hive, noise, getDataOptions);
 
   const processedTemperature = useMemo(() => {
     return temperatureData.map(({ timestamp, value }) => {
@@ -98,6 +91,12 @@ const GraphsWorkspace = (): JSX.Element => {
     });
   }, [humidityData]);
 
+  const processedNoise = useMemo(() => {
+    return noiseData.map(({ timestamp, value }) => {
+      return { date: timestamp, noise: value }
+    });
+  }, [noiseData])
+
   useEffect(() => {
     console.log("Processed temperature data: ", processedTemperature);
   }, [processedTemperature]);
@@ -110,20 +109,14 @@ const GraphsWorkspace = (): JSX.Element => {
     console.log("Processed humidity data: ", processedHumidity);
   }, [processedHumidity]);
 
-  const handleIncomingUpdate = useCallback(() => {
-    const randomNumber = Math.floor(Math.random() * 1000);
-    setIncoming(randomNumber);
-  }, [setIncoming]);
-
-  const handleDepartingUpdate = useCallback(() => {
-    const randomNumber = Math.floor(Math.random() * 1000);
-    setDeparting(randomNumber);
-  }, [setDeparting]);
+  useEffect(() => {
+    console.log("Processed noise data: ", processedNoise);
+  }, [processedNoise]);
 
   return (
-    <div className="flex flex-row gap-4">
+    <div className="flex flex-col h-screen w-screen md:w-full md:flex-row gap-4 md:pr-0">
       {/* Place Control Form and Preview table in diferent forms */}
-      <div className="flex flex-col gap-4 w-1/3">
+      <div className="flex flex-col gap-4 w-full md:w-1/3 pr-[90px] md:pr-0">
         <Card>
           <CardHeader className="flex flex-col gap-2">
             <CardTitle>Preview Selection</CardTitle>
@@ -131,34 +124,38 @@ const GraphsWorkspace = (): JSX.Element => {
               Interact with the forms to update data preview selection and click
               export to generate a detailed export of the hive data.
             </CardDescription>
-            {/* <Button onClick={handleDepartingUpdate}>Generate Departing</Button> */}
           </CardHeader>
         </Card>
         <SensorSelectionForm />
       </div>
-      <div className="flex flex-col flex-1 gap-4">
-        <div className="flex flex-row flex-1 gap-4">
+      <div className="flex flex-col flex-1 h-full gap-4 pr-[90px] md:pr-0">
+        <div className="flex flex-col md:flex-row flex-1 gap-4">
           <LineChart
             chartData={processedTemperature}
             chartConfig={temperatureConfig}
-            className="w-2/3"
+            className="w-full md:w-1/2"
           />
-          <CustomRadialChart
+          <LineChart
+            chartData={processedNoise}
+            chartConfig={noiseConfig}
+            className="w-full md:w-1/2"
+          />
+          {/* <CustomRadialChart
             chartData={radialHookData}
             chartConfig={radialConfig}
             className="w-1/3"
-          />
+          /> */}
         </div>
-        <div className="flex flex-row flex-1 gap-4">
+        <div className="flex flex-col md:flex-row flex-1 gap-4 md:pr-0">
           <LineChart
             chartData={processedPressure}
             chartConfig={pressureConfig}
-            className="flex-1 w-1/2"
+            className="w-full md:w-1/2"
           />
           <LineChart
             chartData={processedHumidity}
             chartConfig={humidityConfig}
-            className="flex-1 w-1/2"
+            className="w-full md:w-1/2"
           />
         </div>
       </div>
