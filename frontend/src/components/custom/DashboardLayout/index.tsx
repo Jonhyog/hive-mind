@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from "react";
 
 import { Button } from "@/components/ui/button";
-import { Icon, SquareTerminal, LifeBuoy, Settings, Cctv } from "lucide-react";
+import { Icon, SquareTerminal, LifeBuoy, Settings, Cctv, FolderClock } from "lucide-react";
 import { beeHive } from "@lucide/lab";
 import {
   Tooltip,
@@ -13,10 +13,12 @@ import WorkspaceSelection from "./WorkspaceSelection";
 import GraphsWorkspace from "@/workspaces/Graphs";
 import VideoMonitoringWorkspace from "@/workspaces/Monitoring";
 import OptionsSelectionPopover from "../OptionsSelectionPopover";
+import ResultsWorkspace from "@/workspaces/Results";
 
 const WorkspaceLabels = {
   graphs: "Graphs",
   monitoring: "Video Monitoring",
+  results: "Results"
 } as const;
 
 const DashboardLayout = (): JSX.Element => {
@@ -49,6 +51,12 @@ const DashboardLayout = (): JSX.Element => {
             isSelected={WorkspaceLabels.monitoring === isSelected}
             workspaceName={WorkspaceLabels.monitoring}
             workspaceIcon={<Cctv className="size-5" />}
+            onClick={handleWorkspaceSelection}
+          />
+          <WorkspaceSelection
+            isSelected={WorkspaceLabels.results === isSelected}
+            workspaceName={WorkspaceLabels.results}
+            workspaceIcon={<FolderClock className="size-5" />}
             onClick={handleWorkspaceSelection}
           />
         </nav>
@@ -93,6 +101,7 @@ const DashboardLayout = (): JSX.Element => {
         <div className="flex flex-col flex-1 w-full p-4 mt-[57px] overflow-auto">
             {WorkspaceLabels.graphs === isSelected && <GraphsWorkspace />}
             {WorkspaceLabels.monitoring === isSelected && <VideoMonitoringWorkspace />}
+            {WorkspaceLabels.results === isSelected && <ResultsWorkspace />}
         </div>
       </div>
     </div>
