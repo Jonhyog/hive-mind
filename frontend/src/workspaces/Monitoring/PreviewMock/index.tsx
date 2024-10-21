@@ -1,36 +1,26 @@
+import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 
-import { RefreshCcw } from "lucide-react";
+type VideoPreviewProps = {
+  videoUrl?: string | null;
+};
 
-const PreviewMock = (): JSX.Element => {
+const VideoPreview = ({ videoSrc }: { videoSrc: string }): JSX.Element => {
   return (
-    <div className="relative flex flex-1 h-full min-h-[50vh] flex-col rounded-xl bg-muted p-4">
-      <Badge variant="outline" className="absolute left-3 top-3">
-        Original Image
-      </Badge>
-      <Tooltip>
-      <TooltipTrigger asChild>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="absolute right-3 top-3"
-          name="switch"
-          aria-label="Playground"
-          onClick={undefined}
-        >
-          <RefreshCcw />
-        </Button>
-      </TooltipTrigger>
-      <TooltipContent side="right" sideOffset={5}>
-        Switch view
-      </TooltipContent>
-    </Tooltip>
+    <video controls className="rounded-xl bg-black">
+      <source src={videoSrc} type="video/mp4" className="w-full rounded-xl" />
+    </video>
+  );
+};
+const PreviewMock = ({ videoUrl }: VideoPreviewProps): JSX.Element => {
+  return (
+    <div className="flex-1 max-h-full rounded-xl">
+      <AspectRatio ratio={16 / 9} className="flex content-end bg-muted rounded-xl max-h-full">
+        <Badge variant="outline" className="absolute bg-muted left-3 top-3">
+          {videoUrl !== "" && videoUrl ? "Original Video" : "No Video"}
+        </Badge>
+        {videoUrl !== "" && videoUrl && (<VideoPreview videoSrc={videoUrl} />)}
+      </AspectRatio>
     </div>
   );
 };
