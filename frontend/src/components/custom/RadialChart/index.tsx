@@ -33,8 +33,8 @@ const CustomRadialChart = ({
   chartConfig,
   className,
 }: RadialMockProps): JSX.Element => {
-  //   const totalVisitors = chartData[0].desktop + chartData[0].mobile
-  const total = Object.values(chartData).reduce((acc, curr) => acc + curr, 0);
+  // const total = Object.values(chartData).reduce((acc, curr) => acc + curr, 0);
+  const diff = chartData["incoming"] - chartData["departing"];
 
   const plots = useMemo(() => {
     const keys = Object.keys(chartData);
@@ -82,7 +82,7 @@ const CustomRadialChart = ({
                           y={(viewBox.cy || 0) - 16}
                           className="fill-foreground text-2xl font-bold"
                         >
-                          {total.toLocaleString()}
+                          {diff.toLocaleString()}
                         </tspan>
                         <tspan
                           x={viewBox.cx}

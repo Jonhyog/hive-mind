@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 import { Check, ChevronsUpDown } from "lucide-react"
 
@@ -25,12 +25,23 @@ type ComboboxOptions = {
 
 type ComboboxProps = {
     initial: string;
-    options: ComboboxOptions[] 
+    options: ComboboxOptions[];
+    onChange?: (value: string) => void;
 };
 
-const Combobox = ({ initial, options }: ComboboxProps) => {
+const Combobox = ({ initial, options, onChange }: ComboboxProps) => {
   const [open, setOpen] = useState(false)
   const [value, setValue] = useState(initial);
+
+  const handleChange = useCallback((currentValue: string) => {
+    if (onChange) {
+      onChange(currentValue)
+    }
+    
+    setValue(currentValue)
+    setOpen(false)
+  }, [onChange]);
+
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -57,10 +68,7 @@ const Combobox = ({ initial, options }: ComboboxProps) => {
                 <CommandItem
                   key={framework.value}
                   value={framework.value}
-                  onSelect={(currentValue) => {
-                    setValue(currentValue === value ? "" : currentValue)
-                    setOpen(false)
-                  }}
+                  onSelect={handleChange}
                 >
                   <Check
                     className={cn(
