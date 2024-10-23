@@ -51,4 +51,4 @@ class VideoController {
   }
 }
 
-module.exports = VideoController();
+module.exports = VideoController;
