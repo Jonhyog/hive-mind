@@ -2,7 +2,7 @@ import gc
 import ujson
 import urequests
 
-url = 'http://143.106.24.56:3003'
+url = 'http://localhost:3003'
 
 def write_data(readings, ids, timestamp):
     headers = {'Content-Type': 'application/json'}

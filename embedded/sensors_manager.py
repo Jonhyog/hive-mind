@@ -72,7 +72,11 @@ class SensorsManager:
                 'noise_id': noise_id
             }
             print("Writing data")
-            api.write_data(readings, ids, timestamp)
+            try:
+                api.write_data(readings, ids, timestamp)
+            except Exception as e:
+                print(f"Failed to write data: {e}")
+            print()
             
             # Dormir até próxima leitura
             time.sleep(4)
