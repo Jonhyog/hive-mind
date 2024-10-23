@@ -1,5 +1,4 @@
 const VideoData = require('../../models/videosModel');
-const axios = require('axios')
 
 class VideoController {
   async upload(req, res) {
@@ -7,24 +6,26 @@ class VideoController {
       const { buffer } = req.file;
       const videoId = req.body.videoId;
 
-      const response = await axios.post('http://localhost:5000/process-video', 
-        buffer,
-        {
-          headers: {
-            "Content-Type": "application/octet-stream"
-          },
-          maxContentLength: Infinity,
-          maxBodyLength: Infinity
-        }
-      );
+      const response = await fetch('http://localhost:5000/process-video', {
+        method: 'POST',
+        headers: {
+          "Content-Type": "application/octet-stream",
+          "Content-Length": buffer.length
+        },
+        body: buffer
+      });
 
-      const { duration, resolution, processing_time } = response.data;
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status} ${response.statusText}`);
+      }
+
+      const { duration, resolution, processing_time } = await response.json
 
       const video = new VideoData({
         videoId,
         duration,
         resolution,
-        results: 'Processed in ${processing_time} seconds'
+        results: `Processed in ${processing_time} seconds`
       });
       await video.save();
 
