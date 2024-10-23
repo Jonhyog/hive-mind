@@ -24,6 +24,8 @@ async def process_video(file):
     # Obtém a taxa de frames (FPS) e o número total de frames
     fps = cap.get(cv2.CAP_PROP_FPS)
     frame_count = cap.get(cv2.CAP_PROP_FRAME_COUNT)
+    width = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
+    height = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
 
     # Calcula a duração do vídeo em segundos
     duration = frame_count / fps
@@ -39,5 +41,6 @@ async def process_video(file):
     return {
         "filename": file.filename,
         "duration_seconds": duration,
+        "resolution": f"{int(width)}x{int(height)}",
         "processing_time_seconds": processing_time
     }

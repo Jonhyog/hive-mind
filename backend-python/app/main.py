@@ -10,8 +10,8 @@ def read_root():
     return {
         "response":"Python's Server is Up and running!!",
         "OpenCv-Version":cv2.__version__
-            }
+    }
 
-@app.post("/upload-video")
-async def read_video(file: UploadFile = File(...)):
+@app.post("/process-video")
+async def upload_video(file: UploadFile = File(...)):
     return await process_video(file)
