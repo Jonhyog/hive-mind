@@ -14,7 +14,7 @@ class VideoController {
         method: 'POST',
         headers: {
           'Content-Type': 'application/octet-stream',
-          'detector-type': method
+          'detector-type': detector_type
         },
         body: videoFile.buffer,
       });
