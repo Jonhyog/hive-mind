@@ -4,10 +4,10 @@ const VideoRoute = require("./videos/videoRoute");
 const DEFAULT_ROUTE = "/video";
 
 class VideoRouter {
-  constructor(app) {
+  constructor(app, upload) {
     const router = express.Router();
 
-    new VideoRoute(router);
+    new VideoRoute(router, upload);
 
     app.use(DEFAULT_ROUTE, router);
   }

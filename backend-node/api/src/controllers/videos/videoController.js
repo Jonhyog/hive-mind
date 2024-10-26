@@ -3,26 +3,34 @@ const VideoData = require('../../models/videosModel');
 class VideoController {
   async upload(req, res) {
     try {
-      const { video } = req.body
+      const { detector_type } = req.body;
+      const videoFile = req.file;
 
-      const video64 = video.toString('base64');
+      if (!videoFile) {
+        return res.status(400).json({ message: "No video filed uploaded "});
+      }
 
       const response = await fetch('http://localhost:5000/process-video', {
         method: 'POST',
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ file: video64 })
+        headers: {
+          'Content-Type': 'application/octet-stream',
+          'detector-type': method
+        },
+        body: videoFile.buffer,
       });
 
       if (!response.ok) {
         throw new Error(`Error: ${response.status} ${response.statusText}`);
       }
 
-      const { duration, resolution, processing_time } = await response.json();
+      const { duration, resolution, processing_time, events } = await response.json();
 
       const videoData = new VideoData({
         duration,
         resolution,
-        results: `Processed in ${processing_time} seconds`
+        detector_type,
+        processing_time,
+        events
       });
       await videoData.save();
 

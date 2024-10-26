@@ -5,8 +5,12 @@ const cors = require("cors");
 const HiveRouter = require("./routes/hivesRouter");
 const SensorRouter = require("./routes/sensorsRouter");
 const VideoRouter = require("./routes/videosRouter");
+const multer = require("multer");
 
 const app = express();
+
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
 
 // Não gosto muito disso
 app.use(cors());
@@ -30,7 +34,7 @@ app.route("").get((req, res) => {
 new MetricsRouter(app);
 new HiveRouter(app);
 new SensorRouter(app);
-new VideoRouter(app);
+new VideoRouter(app, upload);
 
 console.log(process.env);
 app.listen(3000);
