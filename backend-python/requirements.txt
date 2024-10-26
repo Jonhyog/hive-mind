@@ -2,3 +2,4 @@ fastapi
 uvicorn
 opencv-python-headless
 python-multipart
+ultralytics
