@@ -1,9 +1,7 @@
-import cv2.version
-from fastapi import FastAPI, File, UploadFile
-from beeCounting import process_video
-import cv2 
-import base64
+import cv2
+from fastapi import FastAPI, File, UploadFile, Header
 from io import BytesIO
+from beeCounting import process_video
 
 app = FastAPI()
 
@@ -15,6 +13,6 @@ def read_root():
     }
 
 @app.post("/process-video")
-async def upload_video(file: str):
-    video_data = base64.b64decode(file)
-    return await process_video(BytesIO(video_data))
+async def upload_video(file: UploadFile = File(...), detector_type: str = Header(...)):
+    video_data = await file.read()
+    return await process_video(BytesIO(video_data), detector_type)
