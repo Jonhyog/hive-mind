@@ -27,19 +27,20 @@ class VideoController {
       if (responseData.error) {
         return res.status(442).json({ message: responseData.error })
       }
-      const { filename, duration, resolution, processing_time, events } = responseData;
 
+      const { message, filename, status } = responseData
       const videoData = new VideoData({
         filename,
-        duration,
-        resolution,
+        duration: 0,
+        resolution: "Pending",
         detector_type,
-        processing_time,
-        events
+        processing_time: 0,
+        events: [],
+        status,
       });
       await videoData.save();
 
-      res.status(201).json({ message: "Video processed and saved", responseData });
+      res.status(201).json({ message: "Video processing", responseData });
       } catch (err) {
         res.status(500).json({ message: err.message });
       }
@@ -54,6 +55,26 @@ class VideoController {
         return res.status(404).json({ message: 'Video not found' });
       }
     
+      res.status(200).json(video);
+    } catch (err) {
+      res.status(500).json({ message: err.message });
+    }
+  }
+
+  async update(req, res) {
+    try {
+      const { filename, duration, resolution, 
+        processing_time, events, status } = req.body;
+
+      const video = await VideoData.findOneAndUpdate(
+        { filename },
+        { duration, resolution, processing_time, events, status },
+        { new: true });
+      
+      if (!video) {
+        return res.status(404).json({ message: "Video not found" });
+      }
+
       res.status(200).json(video);
     } catch (err) {
       res.status(500).json({ message: err.message });

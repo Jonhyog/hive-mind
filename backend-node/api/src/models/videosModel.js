@@ -10,8 +10,9 @@ const videoSchema = new mongoose.Schema({
     duration: { type: Number, required: true },
     resolution: { type: String, required: true },
     detector_type: { type: String, required: true },
-    processing_time: { type: Number, required: true},
+    processing_time: { type: Number, required: true },
     events: { type: [crossingEventSchema], required: true },
+    status: { type: String, required: true }
   }, { timestamps: true });
   
   module.exports = mongoose.model('Video', videoSchema);

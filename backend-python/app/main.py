@@ -1,5 +1,5 @@
 import cv2
-from fastapi import FastAPI, File, UploadFile, Form
+from fastapi import FastAPI, File, UploadFile, Form, HTTPException, BackgroundTasks
 from io import BytesIO
 from beeCounting import process_video
 
@@ -13,6 +13,19 @@ def read_root():
     }
 
 @app.post("/process-video")
-async def upload_video(file: UploadFile = File(...), detector_type: str = Form(...)):
-    video_data = await file.read()
-    return await process_video(BytesIO(video_data), detector_type, file.filename)
+async def upload_video(
+        background_tasks: BackgroundTasks, 
+        file: UploadFile = File(...), 
+        detector_type: str = Form(...)):
+    try:
+        video_data = await file.read()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"File read error: {str(e)}")
+
+    background_tasks.add_task(process_video,
+        BytesIO(video_data), detector_type, file.filename)
+    return { 
+        "message": "Video processing started successfully",
+        "filename": file.filename,
+        "status": "Processing"
+    }

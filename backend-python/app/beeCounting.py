@@ -2,6 +2,7 @@ import cv2
 import tempfile
 import os
 import time
+import requests
 
 from background_subtraction import BackgroundSubtractorDetector
 from yolo import YOLOv11Detector
@@ -35,7 +36,6 @@ async def process_video(file, detector_type, filename):
 
     tracker = ProbabilisticTracker()
     fps = cap.get(cv2.CAP_PROP_FPS)
-    events = []
 
     while True:
         ret, frame = cap.read()
@@ -76,10 +76,17 @@ async def process_video(file, detector_type, filename):
     end_time = time.time()
     processing_time = end_time - start_time
 
-    return {
+    result_data = {
         "filename": filename,
         "duration": duration,
         "resolution": f"{int(width)}x{int(height)}",
         "processing_time": processing_time,
-        "events": tracker.crossing_events
+        "events": tracker.crossing_events,
+        "status": "Done"
     }
+
+    # Usa callback para mandar os resultado para o Node
+    try:
+        requests.post("http://backend-nodejs-api:3000/video/callback", json=result_data)
+    except requests.exceptions.RequestException as e:
+        print(f"Falha no callback: {e}")

@@ -13,6 +13,10 @@ class VideoRoute {
     router
       .route(DEFAULT_ROUTE + '/:id')
       .get((req, res) => this.controller.get(req, res))
+
+    router
+      .route(DEFAULT_ROUTE + '/callback')
+      .post((req, res) => this.controller.update(req, res))
   }
 }
 
