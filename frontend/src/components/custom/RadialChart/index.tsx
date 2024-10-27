@@ -33,8 +33,10 @@ const CustomRadialChart = ({
   chartConfig,
   className,
 }: RadialMockProps): JSX.Element => {
+  const incoming = chartData["incoming"] ?? 0;
+  const departing = chartData["departing"] ?? 0;
+  const diff = incoming - departing;
   // const total = Object.values(chartData).reduce((acc, curr) => acc + curr, 0);
-  const diff = chartData["incoming"] - chartData["departing"];
 
   const plots = useMemo(() => {
     const keys = Object.keys(chartData);

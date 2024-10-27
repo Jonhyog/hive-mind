@@ -1,5 +1,5 @@
+import BeeLineChart from "@/components/custom/BeeLineChart";
 import Combobox from "@/components/custom/Combobox";
-import LineChart from "@/components/custom/LineChart";
 import CustomRadialChart from "@/components/custom/RadialChart";
 import {
   Card,
@@ -8,7 +8,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { ChartConfig } from "@/components/ui/chart";
-import { useEffect, useState } from "react";
+import useGetVideos from "@/hooks/useGetVideos";
+import { useEffect, useMemo, useState } from "react";
 
 type ProcessResultProps = {
   title: string;
@@ -30,21 +31,6 @@ const ProcessResult = ({
     </div>
   );
 };
-
-const ModelResults = [
-  {
-    value: "Lorem: 1337",
-    view: <ProcessResult title="Lorem" hash="1337" status="completed" />,
-  },
-  {
-    value: "Ipsum: 0420",
-    view: <ProcessResult title="Ipsum" hash="0420" status="processing" />,
-  },
-  {
-    value: "Dolor: 1234",
-    view: <ProcessResult title="Dolor" hash="1234" status="completed" />,
-  },
-];
 
 const radialConfig = {
   incoming: {
@@ -71,58 +57,83 @@ const lineChartConfig = {
   },
 } satisfies ChartConfig;
 
-const radialChartData = {
-  "Lorem: 1337": {
-    incoming: 750,
-    departing: 800,
-  },
-  "Ipsum: 0420": {
-    incoming: 900,
-    departing: 800,
-  },
-  "Dolor: 1234": {
-    incoming: 700,
-    departing: 850,
-  },
-};
+const videosOptions = {};
 
-const lineChartData = {
-  "Lorem: 1337": [
-    { date: '2024-10-03T21:21:19.742Z', incoming: 222, departing: 150 },
-    { date: '2024-10-03T21:21:24.746Z', incoming: 97, departing: 180 },
-    { date: '2024-10-03T21:21:33.140Z', incoming: 167, departing: 120 },
-    { date: '2024-10-03T21:21:37.874Z', incoming: 242, departing: 260 },
-    { date: '2024-10-03T21:21:42.553Z', incoming: 373, departing: 290 },
-    { date: '2024-10-03T21:21:53.863Z', incoming: 301, departing: 340 },
-  ],
-  "Ipsum: 0420": [
-    { date: '2024-10-03T21:21:19.742Z', incoming: 327, departing: 350 },
-    { date: '2024-10-03T21:21:24.746Z', incoming: 292, departing: 210 },
-    { date: '2024-10-03T21:21:33.140Z', incoming: 342, departing: 380 },
-    { date: '2024-10-03T21:21:42.553Z', incoming: 137, departing: 220 },
-    { date: '2024-10-03T21:21:42.553Z', incoming: 120, departing: 170 },
-    { date: '2024-10-03T21:21:42.553Z', incoming: 138, departing: 190 },
-    { date: '2024-10-03T21:21:59.345Z', incoming: 446, departing: 360 },
-    { date: '2024-10-03T21:22:05.187Z', incoming: 364, departing: 410 },
-  ],
-  "Dolor: 1234": [
-    { date: '2024-10-03T21:21:19.742Z', incoming: 498, departing: 520 },
-    { date: '2024-10-03T21:21:24.746Z', incoming: 388, departing: 300 },
-    { date: '2024-10-03T21:21:33.140Z', incoming: 149, departing: 210 },
-    { date: '2024-10-03T21:21:42.553Z', incoming: 227, departing: 180 },
-    { date: '2024-10-03T21:21:42.553Z', incoming: 293, departing: 330 },
-    { date: '2024-10-03T21:21:42.553Z', incoming: 335, departing: 270 },
-    { date: '2024-10-03T21:21:59.345Z', incoming: 197, departing: 240 },
-    { date: '2024-10-03T21:22:05.187Z', incoming: 197, departing: 160 },
-  ],
-};
+interface LineData {
+  [U: string]: string | number;
+}
 
 const ResultsWorkspace = (): JSX.Element => {
-  const [hash, setHash] = useState(ModelResults[0].value);
+  const [hash, setHash] = useState("");
+  const videos = useGetVideos(videosOptions);
+
+  const videosData = useMemo(() => {
+    return videos.map((vid) => {
+      return {
+        value: vid._id,
+        view: (
+          <ProcessResult
+            title={vid.filename}
+            hash={vid._id}
+            status={vid.status}
+          />
+        ),
+      };
+    });
+  }, [videos]);
+
+  const videosObj = useMemo(() => {
+    return Object.fromEntries(
+      videos.map((vid) => {
+        return [vid._id, vid];
+      })
+    );
+  }, [videos]);
+
+  const graphsData = useMemo(() => {
+    return Object.fromEntries(
+      videos.map((vid) => {
+        const point = { incoming: 0, departing: 0 };
+        const events: LineData[] = [];
+
+        vid.events.forEach((e) => {
+          if (e.direction === "in") {
+            point.incoming += 1;
+          } else {
+            point.departing += 1;
+          }
+
+          events.push({ date: e.timestamp.toString(), ...point });
+        });
+
+        return [vid._id, events.length !== 0 ? events : [{}]];
+      })
+    );
+  }, [videos]);
+
+  const radialChartHook = useMemo(() => {
+    return Object.fromEntries(
+      Object.entries(graphsData).map(([key, value]) => {
+        const acc = value[value.length - 1];
+        return [
+          key,
+          {
+            incoming: acc?.incoming,
+            departing: acc?.departing,
+          },
+        ];
+      })
+    );
+  }, [graphsData]);
 
   useEffect(() => {
-    console.log(lineChartData[hash]);
+    console.log(graphsData[hash]);
+    console.log(radialChartHook);
   }, [hash]);
+
+  useEffect(() => {
+    console.log(videos);
+  }, [videos]);
 
   return (
     <div className="flex flex-1 flex-col md:flex-row justify-between h-screen w-full md:w-full flex-row gap-4">
@@ -137,52 +148,61 @@ const ResultsWorkspace = (): JSX.Element => {
               </CardDescription>
             </CardHeader>
           </Card>
-          <Combobox
-            initial="Lorem: 1337"
-            options={ModelResults}
-            onChange={setHash}
-          />
+          <Combobox initial={""} options={videosData} onChange={setHash} />
         </div>
-        <div className="w-full flex gap-2 p-4 border rounded-xl">
-          <div className="flex flex-1 gap-2">
-            <div className="flex flex-1 flex-col justify-between gap-4">
-              <LineChart chartData={lineChartData[hash]} chartConfig={lineChartConfig} className="flex-1" />
-              <CustomRadialChart
-                chartData={radialChartData[hash]}
-                chartConfig={radialConfig}
-                className="flex-1"
-              />
+        {hash !== "" && (
+          <div className="w-full flex gap-2 p-4 border rounded-xl">
+            <div className="flex flex-1 gap-2">
+              <div className="flex flex-1 flex-col justify-between gap-4">
+                <Card className="flex-1">
+                  <CardHeader className="flex flex-1 w-full flex-col gap-2">
+                    <CardTitle>Job Summary</CardTitle>
+                    <CardDescription>
+                      <ul className="list-disc list-inside text-base flex flex-col py-4 gap-2">
+                      <li className="list-item">
+                          <span className="font-medium mr-2">Status:</span>
+                          <span>{videosObj[hash].status}</span>
+                        </li>
+                        <li className="list-item">
+                          <span className="font-medium mr-2">Video ID:</span>
+                          <span>{videosObj[hash]._id}</span>
+                        </li>
+                        <li className="list-item">
+                          <span className="font-medium mr-2">Created At:</span>
+                          <span>{videosObj[hash].createdAt}</span>
+                        </li>
+                        <li className="list-item">
+                          <span className="font-medium mr-2">Duration:</span>
+                          <span>{videosObj[hash].duration}</span>
+                        </li>
+                        <li className="list-item">
+                          <span className="font-medium mr-2">
+                            Processing Time:
+                          </span>
+                          <span>{videosObj[hash].processing_time}</span>
+                        </li>
+                        <li className="list-item">
+                          <span className="font-medium mr-2">Detector:</span>
+                          <span>{videosObj[hash].detector_type}</span>
+                        </li>
+                      </ul>
+                    </CardDescription>
+                  </CardHeader>
+                </Card>
+                <BeeLineChart
+                  chartData={graphsData[hash]}
+                  chartConfig={lineChartConfig}
+                  className="flex-1"
+                />
+              </div>
             </div>
+            <CustomRadialChart
+              chartData={radialChartHook[hash]}
+              chartConfig={radialConfig}
+              className="w-1/2"
+            />
           </div>
-          <Card className="w-1/2">
-            <CardHeader className="flex flex-1 w-full flex-col gap-2">
-              <CardTitle>Job Summary</CardTitle>
-              <CardDescription>
-                <span className="w-1/2">
-                  Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                  Suscipit explicabo tenetur praesentium, veniam unde architecto
-                  iusto illo non, quas deleniti culpa enim libero sed voluptas
-                  ab placeat esse ipsam quo corporis laboriosam molestiae
-                  pariatur. Iusto error laborum vel illo maiores odit ex atque
-                  quo, quasi mollitia? Commodi molestias nulla porro, eius
-                  possimus vero at, fugit, ad perferendis hic libero cum
-                  distinctio est deserunt ipsa quibusdam recusandae voluptates
-                  assumenda rem tempora harum labore natus nostrum adipisci. Rem
-                  repellendus cupiditate, iste officia repudiandae dolor numquam
-                  itaque sequi quibusdam fugiat aspernatur delectus molestiae
-                  nisi officiis fuga placeat, a natus suscipit! Veniam quibusdam
-                  magnam minus amet atque illo temporibus! Qui ab iusto deserunt
-                  aliquam praesentium nisi illo blanditiis, modi facilis
-                  voluptatem odit culpa? Assumenda, possimus. Consectetur dolore
-                  in itaque, accusantium dolorum veritatis ex beatae repudiandae
-                  non. Fuga exercitationem, similique voluptates temporibus amet
-                  possimus eligendi, fugit voluptas ut commodi asperiores sint.
-                  Omnis magni saepe veniam!
-                </span>
-              </CardDescription>
-            </CardHeader>
-          </Card>
-        </div>
+        )}
       </div>
     </div>
   );

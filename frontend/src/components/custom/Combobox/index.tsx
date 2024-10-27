@@ -54,7 +54,7 @@ const Combobox = ({ initial, options, onChange }: ComboboxProps) => {
         >
           {value
             ? options.find((framework) => framework.value === value)?.value
-            : "Select framework..."}
+            : "Select Job..."}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
@@ -62,7 +62,7 @@ const Combobox = ({ initial, options, onChange }: ComboboxProps) => {
         <Command>
           <CommandInput placeholder="Search job..." />
           <CommandList>
-            <CommandEmpty>No framework found.</CommandEmpty>
+            <CommandEmpty>No Job found.</CommandEmpty>
             <CommandGroup>
               {options.map((framework) => (
                 <CommandItem
