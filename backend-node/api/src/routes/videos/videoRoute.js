@@ -11,7 +11,7 @@ class VideoRoute {
       .post(upload.single('video'), (req, res) => this.controller.upload(req, res))
 
     router
-      .route(DEFAULT_ROUTE + '/:id')
+      .route(DEFAULT_ROUTE)
       .get((req, res) => this.controller.get(req, res))
 
     router

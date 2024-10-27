@@ -8,7 +8,7 @@ from background_subtraction import BackgroundSubtractorDetector
 from yolo import YOLOv11Detector
 from tracker import ProbabilisticTracker
 
-async def process_video(file, detector_type, filename):
+async def process_video(file, detector_type, filename, video_id):
     # Registra o tempo de início
     start_time = time.time()
 
@@ -77,6 +77,7 @@ async def process_video(file, detector_type, filename):
     processing_time = end_time - start_time
 
     result_data = {
+        "video_id": video_id,
         "filename": filename,
         "duration": duration,
         "resolution": f"{int(width)}x{int(height)}",
