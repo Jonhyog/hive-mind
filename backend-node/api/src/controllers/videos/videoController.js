@@ -10,22 +10,27 @@ class VideoController {
         return res.status(400).json({ message: "No video filed uploaded "});
       }
 
-      const response = await fetch('http://localhost:5000/process-video', {
+      const formData = new FormData();
+      formData.append('file', new Blob([videoFile.buffer]), videoFile.originalname);
+      formData.append('detector_type', detector_type);
+
+      const response = await fetch('http://backend-python:3000/process-video', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/octet-stream',
-          'detector-type': detector_type
-        },
-        body: videoFile.buffer,
+        body: formData,
       });
 
       if (!response.ok) {
         throw new Error(`Error: ${response.status} ${response.statusText}`);
       }
 
-      const { duration, resolution, processing_time, events } = await response.json();
+      const responseData = await response.json();
+      if (responseData.error) {
+        return res.status(442).json({ message: responseData.error })
+      }
+      const { filename, duration, resolution, processing_time, events } = responseData;
 
       const videoData = new VideoData({
+        filename,
         duration,
         resolution,
         detector_type,
@@ -34,7 +39,7 @@ class VideoController {
       });
       await videoData.save();
 
-      res.status(201).json({ message: "Video processed and saved", videoData });
+      res.status(201).json({ message: "Video processed and saved", responseData });
       } catch (err) {
         res.status(500).json({ message: err.message });
       }

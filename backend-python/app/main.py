@@ -1,5 +1,5 @@
 import cv2
-from fastapi import FastAPI, File, UploadFile, Header
+from fastapi import FastAPI, File, UploadFile, Form
 from io import BytesIO
 from beeCounting import process_video
 
@@ -13,6 +13,6 @@ def read_root():
     }
 
 @app.post("/process-video")
-async def upload_video(file: UploadFile = File(...), detector_type: str = Header(...)):
+async def upload_video(file: UploadFile = File(...), detector_type: str = Form(...)):
     video_data = await file.read()
-    return await process_video(BytesIO(video_data), detector_type)
+    return await process_video(BytesIO(video_data), detector_type, file.filename)

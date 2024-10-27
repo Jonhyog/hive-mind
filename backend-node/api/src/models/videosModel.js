@@ -6,6 +6,7 @@ const crossingEventSchema = new mongoose.Schema({
 });
 
 const videoSchema = new mongoose.Schema({
+    filename: {type: String, required: true },
     duration: { type: Number, required: true },
     resolution: { type: String, required: true },
     detector_type: { type: String, required: true },
