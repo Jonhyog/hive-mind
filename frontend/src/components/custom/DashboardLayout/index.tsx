@@ -14,6 +14,7 @@ import GraphsWorkspace from "@/workspaces/Graphs";
 import VideoMonitoringWorkspace from "@/workspaces/Monitoring";
 import OptionsSelectionPopover from "../OptionsSelectionPopover";
 import ResultsWorkspace from "@/workspaces/Results";
+import { Toaster } from "@/components/ui/toaster";
 
 const WorkspaceLabels = {
   graphs: "Graphs",
@@ -34,6 +35,7 @@ const DashboardLayout = (): JSX.Element => {
 
   return (
     <div className="flex h-screen w-full">
+      <Toaster />
       <aside className="inset-x-0 bottom-0 absolute z-20 flex h-[56px] md:h-screen md:w-[56px] flex-row md:flex-col border-t md:border-r md:border-t-0 bg-primary-foreground">
         <div className="hidden md:block border-b p-2">
           <Button variant="outline" size="icon" aria-label="Home">

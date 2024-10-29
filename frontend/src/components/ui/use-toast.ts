@@ -1,4 +1,3 @@
-// Inspired by react-hot-toast library
 import * as React from "react"
 
 import type {
@@ -133,6 +132,7 @@ let memoryState: State = { toasts: [] }
 
 function dispatch(action: Action) {
   memoryState = reducer(memoryState, action)
+  console.log(memoryState);
   listeners.forEach((listener) => {
     listener(memoryState)
   })

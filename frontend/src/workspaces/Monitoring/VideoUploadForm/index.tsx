@@ -11,6 +11,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+import { useToast } from "@/components/ui/use-toast";
+
 type VideoUploadFormProps = {
   onFileChange?: (fileUrl: string) => void;
 };
@@ -20,6 +22,7 @@ const VideoUploadForm = ({
 }: VideoUploadFormProps): JSX.Element => {
   const [file, setFile] = useState<File | null>(null);
   const [side, setSide] = useState("background-subtraction");
+  const { toast } = useToast();
 
   const onFileUpload = useCallback(
     (event: ChangeEvent<HTMLInputElement> | undefined) => {
@@ -46,18 +49,32 @@ const VideoUploadForm = ({
     for (const entrie of formData.entries()) {
       console.log(entrie);
     }
-    
+
     try {
       const response = await fetch(endpoint, {
         method: "POST",
-        body: formData
+        body: formData,
       });
-      const result = await response.json();
-      console.log(result);
+      await response.json();
+
+      toast({
+        duration: 5000,
+        title: "Job created with success!",
+        description:
+          `You can check the job status and other information on the results tab.`,
+      });
     } catch (error) {
+      toast({
+        duration: 5000,
+        title: "Failed to create job.",
+        description:
+          "An unexpected failure happened while creating the job. Please try again.",
+        variant: "destructive",
+      });
+
       console.log("Failed to upload video: ", error);
     }
-  }, [file, side]);
+  }, [file, side, toast]);
 
   return (
     <div className="relative flex-col items-start gap-8 md:flex flex-1 h-full">
