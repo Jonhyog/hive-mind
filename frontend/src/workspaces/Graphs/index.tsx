@@ -114,9 +114,8 @@ const GraphsWorkspace = (): JSX.Element => {
   }, [processedNoise]);
 
   return (
-    <div className="flex flex-col h-screen w-screen md:w-full md:flex-row gap-4 md:pr-0">
-      {/* Place Control Form and Preview table in diferent forms */}
-      <div className="flex flex-col gap-4 w-full md:w-1/3 pr-[90px] md:pr-0">
+    <div className="flex flex-col h-screen w-full md:w-full md:flex-row gap-4 mb-[57px] ">
+      <div className="flex flex-col gap-4 w-full md:w-1/3">
         <Card>
           <CardHeader className="flex flex-col gap-2">
             <CardTitle>Preview Selection</CardTitle>
@@ -128,7 +127,7 @@ const GraphsWorkspace = (): JSX.Element => {
         </Card>
         <SensorSelectionForm />
       </div>
-      <div className="flex flex-col flex-1 h-full gap-4 pr-[90px] md:pr-0">
+      <div className="flex flex-col flex-1 h-full gap-4">
         <div className="flex flex-col md:flex-row flex-1 gap-4">
           <LineChart
             chartData={processedTemperature}
@@ -140,13 +139,8 @@ const GraphsWorkspace = (): JSX.Element => {
             chartConfig={noiseConfig}
             className="w-full md:w-1/2"
           />
-          {/* <CustomRadialChart
-            chartData={radialHookData}
-            chartConfig={radialConfig}
-            className="w-1/3"
-          /> */}
         </div>
-        <div className="flex flex-col md:flex-row flex-1 gap-4 md:pr-0">
+        <div className="flex flex-col md:flex-row flex-1 gap-4">
           <LineChart
             chartData={processedPressure}
             chartConfig={pressureConfig}

@@ -60,7 +60,7 @@ const VideoUploadForm = ({
   }, [file, side]);
 
   return (
-    <div className="relative flex-col items-start gap-8 md:flex h-full">
+    <div className="relative flex-col items-start gap-8 md:flex flex-1 h-full">
       <form className="grid w-full items-start gap-4">
         <fieldset className="grid gap-6 rounded-lg border p-4">
           <legend className="-ml-1 px-1 text-sm font-medium">Settings</legend>

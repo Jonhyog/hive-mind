@@ -2,6 +2,7 @@ import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Badge } from "@/components/ui/badge";
 
 type VideoPreviewProps = {
+  className?: string;
   videoUrl?: string | null;
 };
 
@@ -12,9 +13,10 @@ const VideoPreview = ({ videoSrc }: { videoSrc: string }): JSX.Element => {
     </video>
   );
 };
-const PreviewMock = ({ videoUrl }: VideoPreviewProps): JSX.Element => {
+
+const PreviewMock = ({ className, videoUrl }: VideoPreviewProps): JSX.Element => {
   return (
-    <div className="flex-1 max-h-full rounded-xl">
+    <div className={"min-h-fit md:flex-1 rounded-xl " + (className ?? "")}>
       <AspectRatio ratio={16 / 9} className="flex content-end bg-muted rounded-xl max-h-full">
         <Badge variant="outline" className="absolute bg-muted left-3 top-3">
           {videoUrl !== "" && videoUrl ? "Original Video" : "No Video"}

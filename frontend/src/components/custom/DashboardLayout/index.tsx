@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from "react";
 
 import { Button } from "@/components/ui/button";
-import { Icon, SquareTerminal, LifeBuoy, Settings, Cctv, FolderClock } from "lucide-react";
+import { Icon, SquareTerminal, Settings, Cctv, FolderClock } from "lucide-react";
 import { beeHive } from "@lucide/lab";
 import {
   Tooltip,
@@ -33,14 +33,14 @@ const DashboardLayout = (): JSX.Element => {
   }, []);
 
   return (
-    <div className="flex h-screen w-full pl-[56px]">
-      <aside className="inset-y fixed left-0 z-20 flex h-screen flex-col border-r bg-primary-foreground">
-        <div className="border-b p-2">
+    <div className="flex h-screen w-full">
+      <aside className="inset-x-0 bottom-0 absolute z-20 flex h-[56px] md:h-screen md:w-[56px] flex-row md:flex-col border-t md:border-r md:border-t-0 bg-primary-foreground">
+        <div className="hidden md:block border-b p-2">
           <Button variant="outline" size="icon" aria-label="Home">
             <Icon iconNode={beeHive} />
           </Button>
         </div>
-        <nav className="grid gap-1 p-2">
+        <nav className="flex flex-1 flex-row md:flex-col h-fit md:h-full gap-1 p-2 justify-around">
           <WorkspaceSelection
             isSelected={WorkspaceLabels.graphs === isSelected}
             workspaceName={WorkspaceLabels.graphs}
@@ -59,44 +59,31 @@ const DashboardLayout = (): JSX.Element => {
             workspaceIcon={<FolderClock className="size-5" />}
             onClick={handleWorkspaceSelection}
           />
-        </nav>
-        <nav className="mt-auto grid gap-1 p-2">
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
                 variant="ghost"
                 size="icon"
-                className="mt-auto rounded-lg"
-                aria-label="Help"
-              >
-                <LifeBuoy className="size-5" />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent side="right" sideOffset={5}>
-              Help
-            </TooltipContent>
-          </Tooltip>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="mt-auto rounded-lg"
+                className="mt-auto rounded-lg size-10"
                 aria-label="Account"
               >
                 <Settings className="size-5" />
               </Button>
             </TooltipTrigger>
             <TooltipContent side="right" sideOffset={5}>
-              Account
+              Settings
             </TooltipContent>
           </Tooltip>
         </nav>
       </aside>
-      <div className="h-full w-screen flex flex-col">
-        <header className="fixed w-screen top-0 z-10 flex h-[57px] justify-between items-center gap-1 border-b bg-primary-foreground px-4 pr-[72px]">
-          <h1 className="text-xl font-semibold">{isSelected}</h1>
-          <OptionsSelectionPopover />
+      <div className="h-full w-screen flex flex-col md:pl-[56px]">
+        <header className="absolute inset-x-0 top-0 w-screen z-10 flex">
+          <div className="hidden md:block h-[57px] w-[57px]">
+          </div>
+          <div className="flex flex-1 h-[57px] justify-between items-center gap-1 bg-primary-foreground  border-b px-4">
+            <h1 className="text-xl font-semibold">{isSelected}</h1>
+            <OptionsSelectionPopover />
+          </div>
         </header>
         <div className="flex flex-col flex-1 w-full p-4 mt-[57px] overflow-auto">
             {WorkspaceLabels.graphs === isSelected && <GraphsWorkspace />}

@@ -25,7 +25,7 @@ const ProcessResult = ({
   return (
     <div className="w-full flex justify-between">
       <span>
-        {title}: {hash}
+        {title}: {hash.slice(0, 8)}
       </span>
       <span className="text-muted-foreground font-medium">{status}</span>
     </div>
@@ -151,7 +151,7 @@ const ResultsWorkspace = (): JSX.Element => {
           <Combobox initial={""} options={videosData} onChange={setHash} />
         </div>
         {hash !== "" && (
-          <div className="w-full flex gap-2 p-4 border rounded-xl">
+          <div className="w-full flex flex-col md:flex-row gap-2 p-4 border rounded-xl">
             <div className="flex flex-1 gap-2">
               <div className="flex flex-1 flex-col justify-between gap-4">
                 <Card className="flex-1">
@@ -160,23 +160,23 @@ const ResultsWorkspace = (): JSX.Element => {
                     <CardDescription>
                       <ul className="list-disc list-inside text-base flex flex-col py-4 gap-2">
                       <li className="list-item">
-                          <span className="font-medium mr-2">Status:</span>
+                          <span className="md:font-medium mr-2">Status:</span>
                           <span>{videosObj[hash].status}</span>
                         </li>
                         <li className="list-item">
-                          <span className="font-medium mr-2">Video ID:</span>
+                          <span className="md:font-medium mr-2">Video ID:</span>
                           <span>{videosObj[hash]._id}</span>
                         </li>
                         <li className="list-item">
-                          <span className="font-medium mr-2">Created At:</span>
+                          <span className="md:font-medium mr-2">Created At:</span>
                           <span>{videosObj[hash].createdAt}</span>
                         </li>
                         <li className="list-item">
-                          <span className="font-medium mr-2">Duration:</span>
+                          <span className="md:font-medium mr-2">Duration:</span>
                           <span>{videosObj[hash].duration}</span>
                         </li>
                         <li className="list-item">
-                          <span className="font-medium mr-2">
+                          <span className="md:font-medium mr-2">
                             Processing Time:
                           </span>
                           <span>{videosObj[hash].processing_time}</span>
@@ -199,7 +199,7 @@ const ResultsWorkspace = (): JSX.Element => {
             <CustomRadialChart
               chartData={radialChartHook[hash]}
               chartConfig={radialConfig}
-              className="w-1/2"
+              className="w-full md:w-1/2"
             />
           </div>
         )}
