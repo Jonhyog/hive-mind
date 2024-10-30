@@ -60,8 +60,7 @@ const VideoUploadForm = ({
       toast({
         duration: 5000,
         title: "Job created with success!",
-        description:
-          `You can check the job status and other information on the results tab.`,
+        description: `You can check the job status and other information on the results tab.`,
       });
     } catch (error) {
       toast({

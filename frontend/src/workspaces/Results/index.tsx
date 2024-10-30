@@ -159,7 +159,7 @@ const ResultsWorkspace = (): JSX.Element => {
                     <CardTitle>Job Summary</CardTitle>
                     <CardDescription>
                       <ul className="list-disc list-inside text-base flex flex-col py-4 gap-2">
-                      <li className="list-item">
+                        <li className="list-item">
                           <span className="md:font-medium mr-2">Status:</span>
                           <span>{videosObj[hash].status}</span>
                         </li>
@@ -168,7 +168,9 @@ const ResultsWorkspace = (): JSX.Element => {
                           <span>{videosObj[hash]._id}</span>
                         </li>
                         <li className="list-item">
-                          <span className="md:font-medium mr-2">Created At:</span>
+                          <span className="md:font-medium mr-2">
+                            Created At:
+                          </span>
                           <span>{videosObj[hash].createdAt}</span>
                         </li>
                         <li className="list-item">

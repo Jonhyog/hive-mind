@@ -1,8 +1,14 @@
 import { useEffect } from "react";
-import DashboardLayout from "./components/custom/DashboardLayout";
+
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { HiveProvider } from "./components/custom/HiveProvider";
 import { SensorProvider } from "./components/custom/SensorProvider";
+
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import GraphsPage from "./routes/Graphs";
+import MonitoringPage from "./routes/Monitoring";
+import ResultsPage from "./routes/Results";
+import ResultDetailsPage from "./routes/ResultDetails";
 
 function App() {
   useEffect(() => {
@@ -10,15 +16,21 @@ function App() {
   }, []);
 
   return (
-    <>
+    <Router>
       <TooltipProvider>
         <HiveProvider>
           <SensorProvider>
-            <DashboardLayout />
+            <Routes>
+              <Route path="/" element={<GraphsPage />} />
+              <Route path="/graphs" element={<GraphsPage />} />
+              <Route path="/monitoring" element={<MonitoringPage />} />
+              <Route path="/results" element={<ResultsPage />} />
+              <Route path="/results/:id" element={<ResultDetailsPage />} />
+            </Routes>
           </SensorProvider>
         </HiveProvider>
       </TooltipProvider>
-    </>
+    </Router>
   );
 }
 
