@@ -1,4 +1,5 @@
 import DashboardLayout from "@/components/custom/DashboardLayout";
+import ResultsWorkspace from "@/workspaces/Results";
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 
@@ -11,7 +12,7 @@ const ResultDetailsPage = (): JSX.Element => {
 
   return (
     <DashboardLayout selected="results">
-      <div>Work in Progress</div>
+      <ResultsWorkspace />
     </DashboardLayout>
   );
 };

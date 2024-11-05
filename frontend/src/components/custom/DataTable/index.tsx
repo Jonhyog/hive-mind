@@ -8,16 +8,18 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from "@tanstack/react-table";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  pageSize?: number;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  pageSize
 }: DataTableProps<TData, TValue>) {
   const [pagination, setPagination] = useState({pageIndex: 0, pageSize: 5});
   const table = useReactTable({
@@ -30,6 +32,12 @@ export function DataTable<TData, TValue>({
         pagination
     }
   });
+
+  useEffect(() => {
+    if (pageSize) {
+      setPagination({pageIndex: 0, pageSize});
+    }
+  }, [pageSize]);
 
   return (
     <div>

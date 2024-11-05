@@ -1,5 +1,5 @@
 import BeeLineChart from "@/components/custom/BeeLineChart";
-import Combobox from "@/components/custom/Combobox";
+import { DataTable } from "@/components/custom/DataTable";
 import CustomRadialChart from "@/components/custom/RadialChart";
 import {
   Card,
@@ -9,28 +9,9 @@ import {
 } from "@/components/ui/card";
 import { ChartConfig } from "@/components/ui/chart";
 import useGetVideos from "@/hooks/useGetVideos";
-import { useEffect, useMemo, useState } from "react";
-
-type ProcessResultProps = {
-  title: string;
-  hash: string;
-  status: string;
-};
-
-const ProcessResult = ({
-  title,
-  hash,
-  status,
-}: ProcessResultProps): JSX.Element => {
-  return (
-    <div className="w-full flex justify-between">
-      <span>
-        {title}: {hash.slice(0, 8)}
-      </span>
-      <span className="text-muted-foreground font-medium">{status}</span>
-    </div>
-  );
-};
+import { ColumnDef } from "@tanstack/react-table";
+import { useMemo } from "react";
+import { Link, useParams } from "react-router-dom";
 
 const radialConfig = {
   incoming: {
@@ -63,24 +44,103 @@ interface LineData {
   [U: string]: string | number;
 }
 
-const ResultsWorkspace = (): JSX.Element => {
-  const [hash, setHash] = useState("");
-  const videos = useGetVideos(videosOptions);
+type JobData = {
+  createdAt: string;
+  detector_type: string;
+  duration: number;
+  filename: string;
+  resolution: string;
+  status: string;
+  _id: string;
+};
 
-  const videosData = useMemo(() => {
-    return videos.map((vid) => {
-      return {
-        value: vid._id,
-        view: (
-          <ProcessResult
-            title={vid.filename}
-            hash={vid._id}
-            status={vid.status}
-          />
-        ),
-      };
-    });
-  }, [videos]);
+const columns: ColumnDef<JobData>[] = [
+  {
+    accessorKey: "filename",
+    header: () => <div className="text-center text-strong">Filename</div>,
+    cell: ({ row }) => (
+      <LinkRow route={"/results/" + row.getValue("_id")}>
+        {row.getValue("filename")}
+      </LinkRow>
+    ),
+  },
+  {
+    accessorKey: "_id",
+    header: () => <div className="text-center text-strong">Job ID</div>,
+    cell: ({ row }) => (
+      <LinkRow route={"/results/" + row.getValue("_id")}>
+        {row.getValue("_id")}
+      </LinkRow>
+    ),
+  },
+  {
+    accessorKey: "resolution",
+    header: () => (
+      <div className="text-center text-strong">Video Resolution</div>
+    ),
+    cell: ({ row }) => (
+      <LinkRow route={"/results/" + row.getValue("_id")}>
+        {row.getValue("resolution")}
+      </LinkRow>
+    ),
+  },
+  {
+    accessorKey: "duration",
+    header: () => <div className="text-center text-strong">Video Duration</div>,
+    cell: ({ row }) => (
+      <LinkRow route={"/results/" + row.getValue("_id")}>
+        {row.getValue("duration")}
+      </LinkRow>
+    ),
+  },
+  {
+    accessorKey: "detector_type",
+    header: () => (
+      <div className="text-center text-strong">Detector Algorithm</div>
+    ),
+    cell: ({ row }) => (
+      <LinkRow route={"/results/" + row.getValue("_id")}>
+        {row.getValue("detector_type")}
+      </LinkRow>
+    ),
+  },
+  {
+    accessorKey: "createdAt",
+    header: () => (
+      <div className="text-center text-strong">Created At</div>
+    ),
+    cell: ({ row }) => {
+      const formatedDate = new Date(row.getValue("createdAt")).toLocaleString();
+
+      return (
+        <LinkRow route={"/results/" + row.getValue("_id")}>
+          <span>{formatedDate}</span>
+        </LinkRow>
+      );
+    }
+  },
+  {
+    accessorKey: "status",
+    header: () => <div className="text-center text-strong">Status</div>,
+    cell: ({ row }) => (
+      <LinkRow route={"/results/" + row.getValue("_id")}>
+        {row.getValue("status")}
+      </LinkRow>
+    ),
+  },
+];
+
+const LinkRow = ({ route, children }: { route: string; children: JSX.Element }) => {
+  return (
+    <Link to={route}>
+      <div className="text-center font-medium">{children}</div>
+    </Link>
+  );
+};
+
+const ResultsWorkspace = (): JSX.Element => {
+  const videos = useGetVideos(videosOptions);
+  const { id } = useParams();
 
   const videosObj = useMemo(() => {
     return Object.fromEntries(
@@ -126,31 +186,11 @@ const ResultsWorkspace = (): JSX.Element => {
     );
   }, [graphsData]);
 
-  useEffect(() => {
-    console.log(graphsData[hash]);
-    console.log(radialChartHook);
-  }, [hash]);
-
-  useEffect(() => {
-    console.log(videos);
-  }, [videos]);
-
   return (
     <div className="flex flex-1 flex-col md:flex-row justify-between h-screen w-full md:w-full flex-row gap-4">
-      <div className="flex flex-col md:flex-row gap-4 flex-1">
-        <div className="flex flex-col gap-4 w-full md:w-[460px] md:pr-0">
-          <Card>
-            <CardHeader className="flex flex-col gap-2">
-              <CardTitle>Work In Progress</CardTitle>
-              <CardDescription>
-                Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-                Deleniti, excepturi.
-              </CardDescription>
-            </CardHeader>
-          </Card>
-          <Combobox initial={""} options={videosData} onChange={setHash} />
-        </div>
-        {hash !== "" && (
+      <div className="flex flex-col justify-center md:flex-row gap-4 flex-1">
+        {id == null && <DataTable columns={columns} data={videos} pageSize={10} />}
+        {id != null && (
           <div className="w-full flex flex-col md:flex-row gap-2 p-4 border rounded-xl">
             <div className="flex flex-1 gap-2">
               <div className="flex flex-1 flex-col justify-between gap-4">
@@ -161,45 +201,45 @@ const ResultsWorkspace = (): JSX.Element => {
                       <ul className="list-disc list-inside text-base flex flex-col py-4 gap-2">
                         <li className="list-item">
                           <span className="md:font-medium mr-2">Status:</span>
-                          <span>{videosObj[hash].status}</span>
+                          <span>{videosObj[id]?.status}</span>
                         </li>
                         <li className="list-item">
                           <span className="md:font-medium mr-2">Video ID:</span>
-                          <span>{videosObj[hash]._id}</span>
+                          <span>{videosObj[id]?._id}</span>
                         </li>
                         <li className="list-item">
                           <span className="md:font-medium mr-2">
                             Created At:
                           </span>
-                          <span>{videosObj[hash].createdAt}</span>
+                          <span>{videosObj[id]?.createdAt}</span>
                         </li>
                         <li className="list-item">
                           <span className="md:font-medium mr-2">Duration:</span>
-                          <span>{videosObj[hash].duration}</span>
+                          <span>{videosObj[id]?.duration}</span>
                         </li>
                         <li className="list-item">
                           <span className="md:font-medium mr-2">
                             Processing Time:
                           </span>
-                          <span>{videosObj[hash].processing_time}</span>
+                          <span>{videosObj[id]?.processing_time}</span>
                         </li>
                         <li className="list-item">
                           <span className="font-medium mr-2">Detector:</span>
-                          <span>{videosObj[hash].detector_type}</span>
+                          <span>{videosObj[id]?.detector_type}</span>
                         </li>
                       </ul>
                     </CardDescription>
                   </CardHeader>
                 </Card>
                 <BeeLineChart
-                  chartData={graphsData[hash]}
+                  chartData={graphsData[id] ?? [{}]}
                   chartConfig={lineChartConfig}
                   className="flex-1"
                 />
               </div>
             </div>
             <CustomRadialChart
-              chartData={radialChartHook[hash]}
+              chartData={radialChartHook[id] ?? [{}]}
               chartConfig={radialConfig}
               className="w-full md:w-1/2"
             />
