@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
 import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts";
 
@@ -25,6 +25,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import fillTime from "@/utils/fillTime";
+import TranslatedText from "../TranslatedText";
 
 interface LineData {
   [U: string]: string | number;
@@ -34,26 +35,24 @@ interface LineMockProps {
   chartData: LineData[];
   chartConfig: ChartConfig;
   className: string;
+  label?: string;
 }
 
 type TimeInterval = "1d" | "7d" | "30d";
+
+const intervalLabels = {
+  "1d": "graphs.interval.day",
+  "7d": "graphs.interval.week",
+  "30d": "graphs.interval.month"
+}
 
 const LineChart = ({
   chartData = [{}],
   chartConfig,
   className,
+  label,
 }: LineMockProps): JSX.Element => {
   const [timeRange, setTimeRange] = useState<TimeInterval>("1d");
-
-  const getIntervalLabel = useCallback((interval: TimeInterval) => {
-    const intervalLabels = {
-      "1d": "last day",
-      "7d": "last week",
-      "30d": "last month"
-    };
-
-    return intervalLabels[interval];
-  }, []);
 
   const filteredData = useMemo(() => {
     const filtered = chartData.filter((item) => {
@@ -78,16 +77,18 @@ const LineChart = ({
   const plots = useMemo(() => {
     const keys = Object.keys(filteredData[0]);
 
-    return keys.filter((k) => typeof filteredData[0][k] !== "string").map((k) => (
-      <Area
-        dataKey={k}
-        type="linear"
-        fill={`url(#fill${chartConfig[k]?.label ?? ""})`}
-        stroke={`var(--color-${k})`}
-        stackId="a"
-        isAnimationActive={false}
-      />
-    ));
+    return keys
+      .filter((k) => typeof filteredData[0][k] !== "string")
+      .map((k) => (
+        <Area
+          dataKey={k}
+          type="linear"
+          fill={`url(#fill${chartConfig[k]?.label ?? ""})`}
+          stroke={`var(--color-${k})`}
+          stackId="a"
+          isAnimationActive={false}
+        />
+      ));
   }, [filteredData, chartConfig]);
 
   const plotsGradients = useMemo(() => {
@@ -111,9 +112,12 @@ const LineChart = ({
     <Card className={className}>
       <CardHeader className="flex items-center gap-2 space-y-0 border-b py-5 sm:flex-row">
         <div className="grid flex-1 gap-1 text-center sm:text-left">
-          <CardTitle>Area Chart - Interactive</CardTitle>
+          <CardTitle>
+            <TranslatedText path={label ?? ""} />
+          </CardTitle>
           <CardDescription>
-            Showing collected data for the {getIntervalLabel(timeRange)}
+            <TranslatedText path="graphs.showing" />
+            <TranslatedText path={intervalLabels[timeRange]} />
           </CardDescription>
         </div>
         <Select value={timeRange} onValueChange={setTimeRange}>
@@ -125,13 +129,13 @@ const LineChart = ({
           </SelectTrigger>
           <SelectContent className="rounded-xl">
             <SelectItem value="1d" className="rounded-lg">
-              Last day
+              <TranslatedText path="graphs.interval.day" capitalize={true} />
             </SelectItem>
             <SelectItem value="7d" className="rounded-lg">
-              Last week
+              <TranslatedText path="graphs.interval.week" capitalize={true} />
             </SelectItem>
             <SelectItem value="30d" className="rounded-lg">
-              Last month
+              <TranslatedText path="graphs.interval.month" capitalize={true} />
             </SelectItem>
           </SelectContent>
         </Select>

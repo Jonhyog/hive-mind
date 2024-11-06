@@ -18,6 +18,7 @@ import useGetSensors, {
 import { HiveContext } from "../HiveProvider";
 import ContextSelector from "../ContextSelector";
 import { SensorContext } from "../SensorProvider";
+import TranslatedText from "../TranslatedText";
 
 const avaliableMetrics = [
   "temperature",
@@ -46,13 +47,13 @@ const OptionsSelectionPopover = (): JSX.Element => {
         key,
         sensorsData
           .filter((element) => element.metricsType.includes(key))
-          .map((element) => element.sensorId),
+          .map((element) => ({ value: element.sensorId, label: element.description })),
       ])
     );
   }, [sensorsData]);
 
   const hiveOptions = useMemo(
-    () => hivesData.map((element) => element.hiveId),
+    () => hivesData.map((element) => ({ value: element.hiveId, label: element.description ?? "" })),
     [hivesData]
   );
 
@@ -61,7 +62,6 @@ const OptionsSelectionPopover = (): JSX.Element => {
       <PopoverTrigger asChild>
         <Button variant="outline">
           <Router />
-          {/* Preview Configuration */}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-80 mr-4">
@@ -69,17 +69,16 @@ const OptionsSelectionPopover = (): JSX.Element => {
           <div className="flex flex-col pb-4 gap-1">
             <div className="space-y-1">
               <h4 className="font-medium leading-none">
-                Preview Configuration:
+              <TranslatedText path="quickConfig.title" />:
               </h4>
               <p className="text-sm text-muted-foreground">
-                Select hives and sensors you want to monitor and see in realtime
-                how they behave.
+              <TranslatedText path="quickConfig.description" />
               </p>
             </div>
           </div>
           <div className="flex flex-col py-4 gap-2">
             <div className="flex flex-col gap-1">
-              <h4 className="font-medium leading-none">Hives:</h4>
+              <h4 className="font-medium leading-none"><TranslatedText path="quickConfig.hives" />:</h4>
               <ContextSelector
                 options={hiveOptions}
                 selected={hive ?? ""}
@@ -89,27 +88,27 @@ const OptionsSelectionPopover = (): JSX.Element => {
           </div>
           <div className="flex flex-col pt-4 gap-2">
             <div className="flex flex-col gap-2">
-              <h4 className="font-medium leading-none">Sensors:</h4>
+              <h4 className="font-medium leading-none"><TranslatedText path="quickConfig.sensors" />:</h4>
               <ContextSelector
-                label="Temperature:"
+                label="graphs.temperature"
                 options={sensorOptions.temperature}
                 selected={temperature ?? ""}
                 onSelect={setSensorContext?.setTemperature}
               />
               <ContextSelector
-                label="Pressure:"
+                label="graphs.pressure"
                 options={sensorOptions.pressure}
                 selected={pressure ?? ""}
                 onSelect={setSensorContext?.setPressure}
               />
               <ContextSelector
-                label="Humidity:"
+                label="graphs.humidity"
                 options={sensorOptions.umidity}
                 selected={humidity ?? ""}
                 onSelect={setSensorContext?.setHumidity}
               />
               <ContextSelector
-                label="Noise:"
+                label="graphs.noise"
                 options={sensorOptions.noise}
                 selected={noise ?? ""}
                 onSelect={setSensorContext?.setNoise}

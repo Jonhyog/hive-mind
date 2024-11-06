@@ -116,7 +116,7 @@ const GraphsWorkspace = (): JSX.Element => {
   return (
     <div className="flex flex-col h-screen w-full md:w-full md:flex-row gap-4 mb-[57px] ">
       <div className="flex flex-col gap-4 w-full md:w-1/3">
-        <Card>
+        {/* <Card>
           <CardHeader className="flex flex-col gap-2">
             <CardTitle>Preview Selection</CardTitle>
             <CardDescription>
@@ -124,7 +124,7 @@ const GraphsWorkspace = (): JSX.Element => {
               export to generate a detailed export of the hive data.
             </CardDescription>
           </CardHeader>
-        </Card>
+        </Card> */}
         <SensorSelectionForm />
       </div>
       <div className="flex flex-col flex-1 h-full gap-4">
@@ -133,11 +133,13 @@ const GraphsWorkspace = (): JSX.Element => {
             chartData={processedTemperature}
             chartConfig={temperatureConfig}
             className="w-full md:w-1/2"
+            label="graphs.temperature"
           />
           <LineChart
             chartData={processedNoise}
             chartConfig={noiseConfig}
             className="w-full md:w-1/2"
+            label="graphs.noise"
           />
         </div>
         <div className="flex flex-col md:flex-row flex-1 gap-4">
@@ -145,11 +147,13 @@ const GraphsWorkspace = (): JSX.Element => {
             chartData={processedPressure}
             chartConfig={pressureConfig}
             className="w-full md:w-1/2"
+            label="graphs.pressure"
           />
           <LineChart
             chartData={processedHumidity}
             chartConfig={humidityConfig}
             className="w-full md:w-1/2"
+            label="graphs.humidity"
           />
         </div>
       </div>

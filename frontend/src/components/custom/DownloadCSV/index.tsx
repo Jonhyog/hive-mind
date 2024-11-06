@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { useCallback, useRef } from "react";
+import TranslatedText from "../TranslatedText";
 
 const convertToCSV = (header: string[], data) => {
   const rows = Object.values(data).map((row) => {
@@ -32,7 +33,7 @@ const DownloadCSV = ({ header, data, fileName }) => {
 
   return (
     <div className="flex flex-col justify-end flex-1" ref={downloadRef}>
-      <Button type="button" onClick={onDownload}>Export as CSV</Button>
+      <Button type="button" onClick={onDownload}><TranslatedText path="graphs.table.export" /></Button>
     </div>
   );
 }

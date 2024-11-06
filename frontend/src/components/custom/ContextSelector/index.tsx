@@ -8,10 +8,16 @@ import {
 } from "@/components/ui/select";
 import { Select } from "@radix-ui/react-select";
 import { memo, useCallback, useEffect, useMemo, useState } from "react";
+import TranslatedText from "../TranslatedText";
+
+export type ContexOptions = {
+  label: string;
+  value: string;
+};
 
 type ContextSelectorProps = {
   label?: string;
-  options: string[];
+  options: ContexOptions[];
   selected: string;
   onSelect?: (value: string) => void;
 };
@@ -47,7 +53,7 @@ const ContextSelector = ({
         <SelectContent>
           <SelectGroup>
             {options.map((options) => (
-              <SelectItem value={options}>{options}</SelectItem>
+              <SelectItem value={options.value}>{options.value} - {options.label}</SelectItem>
             ))}
           </SelectGroup>
         </SelectContent>
@@ -57,11 +63,11 @@ const ContextSelector = ({
 
   return (
     <div className="flex flex-1 flex-col gap-2">
-      <Label className="text-sm text-muted-foreground">{label}</Label>
+      <Label className="text-sm text-muted-foreground"><TranslatedText path={label ?? ""} /></Label>
       {sensor !== "" && select}
       {sensor === "" && (
         <p className="text-sm text-muted-foreground">
-          No available options
+          <TranslatedText path="quickConfig.unavailable" />
         </p>
       )}
     </div>

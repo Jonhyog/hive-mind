@@ -10,6 +10,8 @@ import MonitoringPage from "./routes/Monitoring";
 import ResultsPage from "./routes/Results";
 import ResultDetailsPage from "./routes/ResultDetails";
 
+import '@/i18n';
+
 function App() {
   useEffect(() => {
     document.title = "Hive Mind - Dashboard";

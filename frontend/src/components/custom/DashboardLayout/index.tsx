@@ -20,6 +20,8 @@ import WorkspaceSelection from "./WorkspaceSelection";
 import OptionsSelectionPopover from "../OptionsSelectionPopover";
 
 import { useNavigate } from "react-router-dom";
+import TranslatedText from "../TranslatedText";
+import LanguageSelector from "../LanguageSelector";
 
 type NavigationLabels = {
   graphs: string;
@@ -28,9 +30,9 @@ type NavigationLabels = {
 };
 
 const WorkspaceLabels: NavigationLabels = {
-  graphs: "Graphs",
-  monitoring: "Video Monitoring",
-  results: "Results",
+  graphs: "workspaces.graphs",
+  monitoring: "workspaces.monitoring",
+  results: "workspaces.results",
 } as const;
 
 const WorkspacePaths = {
@@ -110,7 +112,7 @@ const DashboardLayout = ({
               </Button>
             </TooltipTrigger>
             <TooltipContent side="right" sideOffset={5}>
-              Settings
+              <TranslatedText path="workspaces.settings" />
             </TooltipContent>
           </Tooltip>
         </nav>
@@ -120,9 +122,12 @@ const DashboardLayout = ({
           <div className="hidden md:block h-[57px] w-[57px]"></div>
           <div className="flex flex-1 h-[57px] justify-between items-center gap-1 bg-primary-foreground  border-b px-4">
             <h1 className="text-xl font-semibold">
-              {WorkspaceLabels[selected]}
+              <TranslatedText path={WorkspaceLabels[selected]} />
             </h1>
-            <OptionsSelectionPopover />
+            <div className="flex justify-between gap-2">
+              <LanguageSelector />
+              <OptionsSelectionPopover />
+            </div>
           </div>
         </header>
         <div className="flex flex-col flex-1 w-full p-4 mt-[57px] overflow-auto">

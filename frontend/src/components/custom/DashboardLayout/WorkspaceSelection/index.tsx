@@ -7,6 +7,8 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
+import TranslatedText from "../../TranslatedText";
+
 type WorkspaceSelectionProps = {
   isSelected?: boolean;
   workspaceName: string;
@@ -37,7 +39,7 @@ const WorkspaceSelection = ({
         </Button>
       </TooltipTrigger>
       <TooltipContent side="right" sideOffset={5}>
-        {workspaceName}
+        <TranslatedText path={workspaceName} />
       </TooltipContent>
     </Tooltip>
   );

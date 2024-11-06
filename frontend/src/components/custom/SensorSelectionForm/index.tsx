@@ -13,6 +13,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import DatePicker from "../DatePicker";
 import DownloadCSV from "../DownloadCSV";
 import useGetNoise from "@/hooks/useGetNoise";
+import TranslatedText from "../TranslatedText";
 
 export type SensorData = {
   temperatureTimestamp: string | undefined;
@@ -25,85 +26,134 @@ export type SensorData = {
   noise: number;
 };
 
-const header = ["temperatureTimestamp", "temperature", "pressureTimestamp", "pressure", "humidityTimestamp", "humidity", "noiseTimestamp", "noise"];
+const header = [
+  "temperatureTimestamp",
+  "temperature",
+  "pressureTimestamp",
+  "pressure",
+  "humidityTimestamp",
+  "humidity",
+  "noiseTimestamp",
+  "noise",
+];
 
 const columns: ColumnDef<SensorData>[] = [
   {
     accessorKey: "temperatureTimestamp",
-    header: "Temperature Timestamp",
+    header: () => (
+      <div className="text-center">
+        <TranslatedText path="graphs.temperature" />{" "}
+        <TranslatedText path="graphs.table.timestamp" />
+      </div>
+    ),
     cell: ({ row }) => {
-      const value = row.getValue("temperatureTimestamp");
-      const date = value != null ? new Date(value) : value; 
-      const text = value != null ? `${date?.toLocaleDateString()} - ${date?.toLocaleTimeString()}` : null;
+      const value: string | undefined = row.getValue("temperatureTimestamp");
+      const date = value != null ? new Date(value) : value;
+      const text =
+        value != null
+          ? `${date?.toLocaleDateString()} - ${date?.toLocaleTimeString()}`
+          : null;
 
-      return (
-        <div className="text-left font-semibold">{text}</div>
-      );
+      return <div className="text-left font-semibold">{text}</div>;
     },
   },
   {
     accessorKey: "temperature",
-    header: () => <div className="text-center">Temperature</div>,
+    header: () => (
+      <div className="text-center">
+        <TranslatedText path="graphs.temperature" />
+      </div>
+    ),
     cell: ({ row }) => {
       return <div className="text-center">{row.getValue("temperature")}</div>;
     },
   },
   {
     accessorKey: "pressureTimestamp",
-    header: "Pressure Timestamp",
+    header: () => (
+      <div className="text-center">
+        <TranslatedText path="graphs.pressure" />{" "}
+        <TranslatedText path="graphs.table.timestamp" />
+      </div>
+    ),
     cell: ({ row }) => {
-      const value = row.getValue("pressureTimestamp");
-      const date = value != null ? new Date(value) : value; 
-      const text = value != null ? `${date?.toLocaleDateString()} - ${date?.toLocaleTimeString()}` : null;
+      const value: string | undefined = row.getValue("pressureTimestamp");
+      const date = value != null ? new Date(value) : value;
+      const text =
+        value != null
+          ? `${date?.toLocaleDateString()} - ${date?.toLocaleTimeString()}`
+          : null;
 
-      return (
-        <div className="text-left font-semibold">{text}</div>
-      );
+      return <div className="text-left font-semibold">{text}</div>;
     },
   },
   {
     accessorKey: "pressure",
-    header: () => <div className="text-center">Pressure</div>,
+    header: () => (
+      <div className="text-center">
+        <TranslatedText path="graphs.pressure" />
+      </div>
+    ),
     cell: ({ row }) => {
       return <div className="text-center">{row.getValue("pressure")}</div>;
     },
   },
   {
     accessorKey: "humidityTimestamp",
-    header: "Humidity Timestamp",
+    header: () => (
+      <div className="text-center">
+        <TranslatedText path="graphs.humidity" />{" "}
+        <TranslatedText path="graphs.table.timestamp" />
+      </div>
+    ),
     cell: ({ row }) => {
-      const value = row.getValue("humidityTimestamp");
-      const date = value != null ? new Date(value) : value; 
-      const text = value != null ? `${date?.toLocaleDateString()} - ${date?.toLocaleTimeString()}` : null;
+      const value: string | undefined = row.getValue("humidityTimestamp");
+      const date = value != null ? new Date(value) : value;
+      const text =
+        value != null
+          ? `${date?.toLocaleDateString()} - ${date?.toLocaleTimeString()}`
+          : null;
 
-      return (
-        <div className="text-left font-semibold">{text}</div>
-      );
+      return <div className="text-left font-semibold">{text}</div>;
     },
   },
   {
     accessorKey: "humidity",
-    header: () => <div className="text-center">Humidity</div>,
+    header: () => (
+      <div className="text-center">
+        <TranslatedText path="graphs.humidity" />
+      </div>
+    ),
     cell: ({ row }) => {
       return <div className="text-center">{row.getValue("humidity")}</div>;
     },
   },
   {
     accessorKey: "noiseTimestamp",
-    header: "Noise Timestamp",
+    header: () => (
+      <div className="text-center">
+        <TranslatedText path="graphs.noise" />{" "}
+        <TranslatedText path="graphs.table.timestamp" />
+      </div>
+    ),
     cell: ({ row }) => {
-      const value = row.getValue("noiseTimestamp");
-      const date = value != null ? new Date(value) : value; 
-      const text = value != null ? `${date?.toLocaleDateString()} - ${date?.toLocaleTimeString()}` : null;
+      const value: string | undefined = row.getValue("noiseTimestamp");
+      const date = value != null ? new Date(value) : value;
+      const text =
+        value != null
+          ? `${date?.toLocaleDateString()} - ${date?.toLocaleTimeString()}`
+          : null;
 
-      return (
-        <div className="text-left font-semibold">{text}</div>
-      );
+      return <div className="text-left font-semibold">{text}</div>;
     },
   },
   {
     accessorKey: "noise",
-    header: () => <div className="text-center">Noise</div>,
+    header: () => (
+      <div className="text-center">
+        <TranslatedText path="graphs.noise" />
+      </div>
+    ),
     cell: ({ row }) => {
       return <div className="text-center">{row.getValue("noise")}</div>;
     },
@@ -122,29 +172,38 @@ const SensorSelectionForm = (): JSX.Element => {
   const humidityData = useGetHumidity(hive, humidity, queryOptions);
   const noiseData = useGetNoise(hive, noise, queryOptions);
 
-  const maxSize = useMemo(() =>
-    Math.max(
-      temperatureData.length,
-      pressureData.length,
+  const maxSize = useMemo(
+    () =>
+      Math.max(
+        temperatureData.length,
+        pressureData.length,
+        humidityData.length,
+        noiseData.length
+      ),
+    [
+      noiseData.length,
       humidityData.length,
-      noiseData.length
-    )
-  , [noiseData.length, humidityData.length, pressureData.length, temperatureData.length]);
+      pressureData.length,
+      temperatureData.length,
+    ]
+  );
 
-  const tableData = useMemo(() =>
-    [...Array(maxSize).keys()].map((idx) => {
-      return {
-        temperatureTimestamp: temperatureData[idx]?.timestamp,
-        temperature: temperatureData[idx]?.value,
-        pressureTimestamp: pressureData[idx]?.timestamp,
-        pressure: pressureData[idx]?.value,
-        humidityTimestamp: humidityData[idx]?.timestamp,
-        humidity: humidityData[idx]?.value,
-        noiseTimestamp: noiseData[idx]?.timestamp,
-        noise: noiseData[idx]?.value,
-      };
-    })
-  , [maxSize, temperatureData, pressureData, humidityData, noiseData]);
+  const tableData = useMemo(
+    () =>
+      [...Array(maxSize).keys()].map((idx) => {
+        return {
+          temperatureTimestamp: temperatureData[idx]?.timestamp,
+          temperature: temperatureData[idx]?.value,
+          pressureTimestamp: pressureData[idx]?.timestamp,
+          pressure: pressureData[idx]?.value,
+          humidityTimestamp: humidityData[idx]?.timestamp,
+          humidity: humidityData[idx]?.value,
+          noiseTimestamp: noiseData[idx]?.timestamp,
+          noise: noiseData[idx]?.value,
+        };
+      }),
+    [maxSize, temperatureData, pressureData, humidityData, noiseData]
+  );
 
   const onChangeStartDate = useCallback((value: Date | undefined) => {
     setQueryOptions((prev) => {
@@ -173,26 +232,27 @@ const SensorSelectionForm = (): JSX.Element => {
 
   return (
     <div className="flex flex-col flex-1 border rounded-lg p-4">
-      <DataTable columns={columns} data={tableData} />
-      {/* <SensorDataTable /> */}
+      <DataTable columns={columns} data={tableData} pageSize={7} />
       <Separator className="my-4" />
       <form className="flex flex-col flex-1 w-full items-start gap-4">
         <fieldset className="flex flex-col flex-1 w-full justify-between gap-2 p-1">
           <div className="flex flex-row flex-1 justify-between gap-2">
             <div className="flex flex-col justify-start gap-2 flex-1">
-              <Label htmlFor="start-time">Initial Date</Label>
+              <Label htmlFor="start-time">
+                <TranslatedText path="graphs.table.initialDate" />
+              </Label>
               <DatePicker onChange={onChangeStartDate} />
             </div>
             <div className="flex flex-col justify-start gap-2 flex-1">
-              <Label htmlFor="start-time">Final Date</Label>
+              <Label htmlFor="start-time">
+                <TranslatedText path="graphs.table.finalDate" />
+              </Label>
               <DatePicker onChange={onChangeEndDate} />
             </div>
           </div>
           <div className="flex flex-1 flex-col justify-stretch">
             <DownloadCSV fileName="report" header={header} data={tableData} />
-            {/* <Button>Export as CSV</Button> */}
           </div>
-          {/* <Button onClick={handleDepartingUpdate}>Generate Departing</Button> */}
         </fieldset>
       </form>
     </div>

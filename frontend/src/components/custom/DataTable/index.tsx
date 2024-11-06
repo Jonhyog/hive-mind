@@ -7,8 +7,15 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from "@tanstack/react-table";
+import {
+  ColumnDef,
+  flexRender,
+  getCoreRowModel,
+  getPaginationRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
 import { useEffect, useState } from "react";
+import TranslatedText from "../TranslatedText";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -19,9 +26,9 @@ interface DataTableProps<TData, TValue> {
 export function DataTable<TData, TValue>({
   columns,
   data,
-  pageSize
+  pageSize,
 }: DataTableProps<TData, TValue>) {
-  const [pagination, setPagination] = useState({pageIndex: 0, pageSize: 5});
+  const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 });
   const table = useReactTable({
     data,
     columns,
@@ -29,70 +36,76 @@ export function DataTable<TData, TValue>({
     getPaginationRowModel: getPaginationRowModel(),
     onPaginationChange: setPagination,
     state: {
-        pagination
-    }
+      pagination,
+    },
   });
 
   useEffect(() => {
     if (pageSize) {
-      setPagination({pageIndex: 0, pageSize});
+      setPagination({ pageIndex: 0, pageSize });
     }
   }, [pageSize]);
 
   return (
     <div>
-        <div className="rounded-md border">
+      <div className="rounded-md border">
         <Table>
-            <TableHeader>
+          <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow key={headerGroup.id}>
+              <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
-                    return (
+                  return (
                     <TableHead key={header.id}>
-                        {header.isPlaceholder
+                      {header.isPlaceholder
                         ? null
                         : flexRender(
                             header.column.columnDef.header,
                             header.getContext()
-                            )}
+                          )}
                     </TableHead>
-                    );
+                  );
                 })}
-                </TableRow>
+              </TableRow>
             ))}
-            </TableHeader>
-            <TableBody>
+          </TableHeader>
+          <TableBody>
             {table.getRowModel().rows?.length ? (
-                table.getRowModel().rows.map((row) => (
+              table.getRowModel().rows.map((row) => (
                 <TableRow
-                    key={row.id}
-                    data-state={row.getIsSelected() && "selected"}
+                  key={row.id}
+                  data-state={row.getIsSelected() && "selected"}
                 >
-                    {row.getVisibleCells().map((cell) => (
+                  {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
                     </TableCell>
-                    ))}
+                  ))}
                 </TableRow>
-                ))
+              ))
             ) : (
-                <TableRow>
-                <TableCell colSpan={columns.length} className="h-24 text-center">
-                    No results.
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
+                  <TranslatedText path="graphs.table.empty" />
                 </TableCell>
-                </TableRow>
+              </TableRow>
             )}
-            </TableBody>
+          </TableBody>
         </Table>
-        </div>
-        <div className="flex items-center justify-end space-x-2 py-4">
+      </div>
+      <div className="flex items-center justify-end space-x-2 py-4">
         <Button
           variant="outline"
           size="sm"
           onClick={() => table.previousPage()}
           disabled={!table.getCanPreviousPage()}
         >
-          Previous
+          <TranslatedText path="graphs.table.previous" />
         </Button>
         <Button
           variant="outline"
@@ -100,7 +113,7 @@ export function DataTable<TData, TValue>({
           onClick={() => table.nextPage()}
           disabled={!table.getCanNextPage()}
         >
-          Next
+          <TranslatedText path="graphs.table.next" />
         </Button>
       </div>
     </div>
