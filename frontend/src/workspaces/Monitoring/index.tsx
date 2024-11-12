@@ -8,6 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import TranslatedText from "@/components/custom/TranslatedText";
 
 const VideoMonitoringWorkspace = (): JSX.Element => {
   const [fileUrl, setFileUrl] = useState<string | null>();
@@ -16,24 +17,34 @@ const VideoMonitoringWorkspace = (): JSX.Element => {
     <div className="flex flex-1 flex-col md:flex-row justify-between h-screen w-full md:w-full flex-row gap-4">
       <Card className="block md:hidden">
         <CardHeader className="flex flex-col gap-2">
-          <CardTitle>Video Upload</CardTitle>
+          <CardTitle>
+            <TranslatedText path="monitoring.title" />
+          </CardTitle>
           <CardDescription>
-            Select a video and upload it to automatically process how many bees
-            were detected in frame during the run time of the video. Note: This
-            might take a while to process but you can see the results and the
-            processing status in the Results tab.
+            <span>
+              <TranslatedText path="monitoring.description" />
+            </span>
+            <br />
+            <span>
+              <TranslatedText path="monitoring.notes" />
+            </span>
           </CardDescription>
         </CardHeader>
       </Card>
       <div className="flex flex-col-reverse md:flex-col gap-4 flex-1">
         <Card className="hidden md:block">
           <CardHeader className="flex flex-col gap-2">
-            <CardTitle>Video Upload</CardTitle>
+            <CardTitle>
+              <TranslatedText path="monitoring.title" />
+            </CardTitle>
             <CardDescription>
-              Select a video and upload it to automatically process how many
-              bees were detected in frame during the run time of the video.
-              Note: This might take a while to process but you can see the
-              results and the processing status in the Results tab.
+              <span>
+                <TranslatedText path="monitoring.description" />
+              </span>
+              <br />
+              <span>
+                <TranslatedText path="monitoring.notes" />
+              </span>
             </CardDescription>
           </CardHeader>
         </Card>

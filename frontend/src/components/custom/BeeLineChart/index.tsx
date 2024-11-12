@@ -17,6 +17,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
+import TranslatedText from "../TranslatedText";
 
 interface LineData {
   [U: string]: string | number;
@@ -70,9 +71,9 @@ const BeeLineChart = ({
     <Card className={className}>
       <CardHeader className="flex items-center gap-2 space-y-0 border-b py-5 sm:flex-row">
         <div className="grid flex-1 gap-1 text-center sm:text-left">
-          <CardTitle>Area Chart - Interactive</CardTitle>
+          <CardTitle><TranslatedText path="results.graph.line" /></CardTitle>
           <CardDescription>
-            Showing collected data
+          <TranslatedText path="results.graph.description" />
           </CardDescription>
         </div>
       </CardHeader>

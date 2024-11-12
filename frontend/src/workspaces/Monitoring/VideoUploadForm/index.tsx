@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/select";
 
 import { useToast } from "@/components/ui/use-toast";
+import TranslatedText from "@/components/custom/TranslatedText";
 
 type VideoUploadFormProps = {
   onFileChange?: (fileUrl: string) => void;
@@ -21,7 +22,7 @@ const VideoUploadForm = ({
   onFileChange,
 }: VideoUploadFormProps): JSX.Element => {
   const [file, setFile] = useState<File | null>(null);
-  const [side, setSide] = useState("background-subtraction");
+  const [algorithm, setAlgorithm] = useState("background-subtraction");
   const { toast } = useToast();
 
   const onFileUpload = useCallback(
@@ -44,7 +45,7 @@ const VideoUploadForm = ({
     const endpoint = "http://localhost:3003/video/upload";
     const formData = new FormData();
     formData.append("video", file);
-    formData.append("detector_type", side);
+    formData.append("detector_type", algorithm);
 
     for (const entrie of formData.entries()) {
       console.log(entrie);
@@ -73,23 +74,23 @@ const VideoUploadForm = ({
 
       console.log("Failed to upload video: ", error);
     }
-  }, [file, side, toast]);
+  }, [file, algorithm, toast]);
 
   return (
     <div className="relative flex-col items-start gap-8 md:flex flex-1 h-full">
       <form className="grid w-full items-start gap-4">
         <fieldset className="grid gap-6 rounded-lg border p-4">
-          <legend className="-ml-1 px-1 text-sm font-medium">Settings</legend>
+          <legend className="-ml-1 px-1 text-sm font-medium"><TranslatedText path="monitoring.settings" /></legend>
           <div className="grid w-full max-w-sm items-center gap-3">
-            <Label htmlFor="picture">Picture</Label>
+            <Label htmlFor="picture"><TranslatedText path="monitoring.video.title" /></Label>
             <Input
               id="picture"
               type="file"
               accept="video/mp4"
               onChange={onFileUpload}
             />
-            <Label htmlFor="side">Side where hive is located</Label>
-            <Select value={side} onValueChange={setSide}>
+            <Label htmlFor="side"><TranslatedText path="monitoring.algorithm.title" /></Label>
+            <Select value={algorithm} onValueChange={setAlgorithm}>
               <SelectTrigger id="side" className="w-full">
                 <SelectValue placeholder="Select a detector" />
               </SelectTrigger>
@@ -101,7 +102,7 @@ const VideoUploadForm = ({
               </SelectContent>
             </Select>
             <Button type="button" onClick={onSubmit}>
-              Upload Video
+              <TranslatedText path="monitoring.upload" />
             </Button>
           </div>
         </fieldset>

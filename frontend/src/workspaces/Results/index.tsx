@@ -1,6 +1,7 @@
 import BeeLineChart from "@/components/custom/BeeLineChart";
 import { DataTable } from "@/components/custom/DataTable";
 import CustomRadialChart from "@/components/custom/RadialChart";
+import TranslatedText from "@/components/custom/TranslatedText";
 import {
   Card,
   CardDescription,
@@ -57,7 +58,7 @@ type JobData = {
 const columns: ColumnDef<JobData>[] = [
   {
     accessorKey: "filename",
-    header: () => <div className="text-center text-strong">Filename</div>,
+    header: () => <div className="text-center text-strong"><TranslatedText path="results.table.filename" /></div>,
     cell: ({ row }) => (
       <LinkRow route={"/results/" + row.getValue("_id")}>
         {row.getValue("filename")}
@@ -66,7 +67,7 @@ const columns: ColumnDef<JobData>[] = [
   },
   {
     accessorKey: "_id",
-    header: () => <div className="text-center text-strong">Job ID</div>,
+    header: () => <div className="text-center text-strong"><TranslatedText path="results.table.job" /></div>,
     cell: ({ row }) => (
       <LinkRow route={"/results/" + row.getValue("_id")}>
         {row.getValue("_id")}
@@ -76,7 +77,7 @@ const columns: ColumnDef<JobData>[] = [
   {
     accessorKey: "resolution",
     header: () => (
-      <div className="text-center text-strong">Video Resolution</div>
+      <div className="text-center text-strong"><TranslatedText path="results.table.resolution" /></div>
     ),
     cell: ({ row }) => (
       <LinkRow route={"/results/" + row.getValue("_id")}>
@@ -86,7 +87,7 @@ const columns: ColumnDef<JobData>[] = [
   },
   {
     accessorKey: "duration",
-    header: () => <div className="text-center text-strong">Video Duration</div>,
+    header: () => <div className="text-center text-strong"><TranslatedText path="results.table.duration" /></div>,
     cell: ({ row }) => (
       <LinkRow route={"/results/" + row.getValue("_id")}>
         {row.getValue("duration")}
@@ -96,7 +97,7 @@ const columns: ColumnDef<JobData>[] = [
   {
     accessorKey: "detector_type",
     header: () => (
-      <div className="text-center text-strong">Detector Algorithm</div>
+      <div className="text-center text-strong"><TranslatedText path="results.table.algorithm" /></div>
     ),
     cell: ({ row }) => (
       <LinkRow route={"/results/" + row.getValue("_id")}>
@@ -107,7 +108,7 @@ const columns: ColumnDef<JobData>[] = [
   {
     accessorKey: "createdAt",
     header: () => (
-      <div className="text-center text-strong">Created At</div>
+      <div className="text-center text-strong"><TranslatedText path="results.table.created" /></div>
     ),
     cell: ({ row }) => {
       const formatedDate = new Date(row.getValue("createdAt")).toLocaleString();
@@ -121,7 +122,7 @@ const columns: ColumnDef<JobData>[] = [
   },
   {
     accessorKey: "status",
-    header: () => <div className="text-center text-strong">Status</div>,
+    header: () => <div className="text-center text-strong"><TranslatedText path="results.table.status" /></div>,
     cell: ({ row }) => (
       <LinkRow route={"/results/" + row.getValue("_id")}>
         {row.getValue("status")}
@@ -196,35 +197,35 @@ const ResultsWorkspace = (): JSX.Element => {
               <div className="flex flex-1 flex-col justify-between gap-4">
                 <Card className="flex-1">
                   <CardHeader className="flex flex-1 w-full flex-col gap-2">
-                    <CardTitle>Job Summary</CardTitle>
+                    <CardTitle><TranslatedText path="results.title" /></CardTitle>
                     <CardDescription>
                       <ul className="list-disc list-inside text-base flex flex-col py-4 gap-2">
                         <li className="list-item">
-                          <span className="md:font-medium mr-2">Status:</span>
+                          <span className="md:font-medium mr-2"><TranslatedText path="results.table.status" capitalize={true} />:</span>
                           <span>{videosObj[id]?.status}</span>
                         </li>
                         <li className="list-item">
-                          <span className="md:font-medium mr-2">Video ID:</span>
+                          <span className="md:font-medium mr-2"><TranslatedText path="results.table.job" capitalize={true} />:</span>
                           <span>{videosObj[id]?._id}</span>
                         </li>
                         <li className="list-item">
                           <span className="md:font-medium mr-2">
-                            Created At:
+                          <TranslatedText path="results.table.created" capitalize={true} />:
                           </span>
                           <span>{videosObj[id]?.createdAt}</span>
                         </li>
                         <li className="list-item">
-                          <span className="md:font-medium mr-2">Duration:</span>
+                          <span className="md:font-medium mr-2"><TranslatedText path="results.table.duration" capitalize={true} />:</span>
                           <span>{videosObj[id]?.duration}</span>
                         </li>
                         <li className="list-item">
                           <span className="md:font-medium mr-2">
-                            Processing Time:
+                          <TranslatedText path="results.table.processing" capitalize={true} />:
                           </span>
                           <span>{videosObj[id]?.processing_time}</span>
                         </li>
                         <li className="list-item">
-                          <span className="font-medium mr-2">Detector:</span>
+                          <span className="font-medium mr-2"><TranslatedText path="results.table.algorithm" capitalize={true} />:</span>
                           <span>{videosObj[id]?.detector_type}</span>
                         </li>
                       </ul>
