@@ -79,7 +79,7 @@ class SensorsManager:
             print()
             
             # Dormir até próxima leitura
-            time.sleep(4)
+            time.sleep(15*60)
     
     def __read_sensors(self):
         readings = {}
