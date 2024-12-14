@@ -8,7 +8,7 @@ from background_subtraction import BackgroundSubtractorDetector
 from yolo import YOLOv11Detector
 from tracker import ProbabilisticTracker
 
-async def process_video(file, detector_type, filename, video_id):
+async def process_video(file, detector_type, filename, video_id, side):
     # Registra o tempo de início
     start_time = time.time()
 
@@ -34,7 +34,13 @@ async def process_video(file, detector_type, filename, video_id):
         os.remove(temp_file_path)
         return {"error": "Método não reconhecido"}
 
-    tracker = ProbabilisticTracker()
+    if side == "left":
+        pos_x = 0
+    else:
+        pos_x = 1920
+    pos_y = 960
+
+    tracker = ProbabilisticTracker(pos_x, pos_y)
     fps = cap.get(cv2.CAP_PROP_FPS)
 
     while True:

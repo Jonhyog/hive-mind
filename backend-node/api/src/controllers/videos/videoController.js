@@ -3,7 +3,7 @@ const VideoData = require('../../models/videosModel');
 class VideoController {
   async upload(req, res) {
     try {
-      const { detector_type } = req.body;
+      const { detector_type, side } = req.body;
       const videoFile = req.file;
 
       if (!videoFile) {
@@ -28,7 +28,8 @@ class VideoController {
       const formData = new FormData();
       formData.append('file', new Blob([videoFile.buffer]), videoFile.originalname);
       formData.append('detector_type', detector_type);
-      formData.append('video_id', videoId)
+      formData.append('video_id', videoId);
+      formData.append('side', side);
 
       const response = await fetch('http://backend-python:3000/process-video', {
         method: 'POST',

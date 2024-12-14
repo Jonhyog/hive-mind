@@ -17,14 +17,15 @@ async def upload_video(
         background_tasks: BackgroundTasks, 
         file: UploadFile = File(...), 
         detector_type: str = Form(...),
-        video_id: str = Form(...)):
+        video_id: str = Form(...),
+        side: str = Form(...)):
     try:
         video_data = await file.read()
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"File read error: {str(e)}")
 
     background_tasks.add_task(process_video,
-        BytesIO(video_data), detector_type, file.filename, str(video_id))
+        BytesIO(video_data), detector_type, file.filename, str(video_id), str(side))
     return { 
         "message": "Video processing started successfully",
         "video_id": str(video_id),
