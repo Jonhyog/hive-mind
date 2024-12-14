@@ -47,6 +47,11 @@ export default {
       algorithm: {
         title: "Detector Algorithm",
       },
+      side: {
+        title: "Hive Side",
+        left: "Left",
+        right: "Right"
+      },
       upload: "Upload Video",
       badge: {
         empty: "No video",

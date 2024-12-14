@@ -23,6 +23,7 @@ const VideoUploadForm = ({
 }: VideoUploadFormProps): JSX.Element => {
   const [file, setFile] = useState<File | null>(null);
   const [algorithm, setAlgorithm] = useState("background-subtraction");
+  const [side, setSide] = useState("left");
   const { toast } = useToast();
 
   const onFileUpload = useCallback(
@@ -46,6 +47,7 @@ const VideoUploadForm = ({
     const formData = new FormData();
     formData.append("video", file);
     formData.append("detector_type", algorithm);
+    formData.append("side", side);
 
     for (const entrie of formData.entries()) {
       console.log(entrie);
@@ -74,7 +76,7 @@ const VideoUploadForm = ({
 
       console.log("Failed to upload video: ", error);
     }
-  }, [file, algorithm, toast]);
+  }, [file, algorithm, side, toast]);
 
   return (
     <div className="relative flex-col items-start gap-8 md:flex flex-1 h-full">
@@ -89,9 +91,9 @@ const VideoUploadForm = ({
               accept="video/mp4"
               onChange={onFileUpload}
             />
-            <Label htmlFor="side"><TranslatedText path="monitoring.algorithm.title" /></Label>
+            <Label htmlFor="algo"><TranslatedText path="monitoring.algorithm.title" /></Label>
             <Select value={algorithm} onValueChange={setAlgorithm}>
-              <SelectTrigger id="side" className="w-full">
+              <SelectTrigger id="algo" className="w-full">
                 <SelectValue placeholder="Select a detector" />
               </SelectTrigger>
               <SelectContent>
@@ -99,6 +101,16 @@ const VideoUploadForm = ({
                   Background Subtraction
                 </SelectItem>
                 <SelectItem value="yolo">YOLO</SelectItem>
+              </SelectContent>
+            </Select>
+            <Label htmlFor="side"><TranslatedText path="monitoring.side.title" /></Label>
+            <Select value={side} onValueChange={setSide}>
+              <SelectTrigger id="side" className="w-full">
+                <SelectValue placeholder="Select a side" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="left"><TranslatedText path="monitoring.side.left" /></SelectItem>
+                <SelectItem value="right"><TranslatedText path="monitoring.side.right" /></SelectItem>
               </SelectContent>
             </Select>
             <Button type="button" onClick={onSubmit}>
