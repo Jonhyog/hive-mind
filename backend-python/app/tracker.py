@@ -3,21 +3,21 @@ import math
 
 # Classe para o tracker baseado em probabilidade
 class ProbabilisticTracker:
-    def __init__(self):
+    def __init__(self,  hive_x = 0, hive_y = 960):
         self.prev_cont = []
         self.curr_cont = []
         self.count_in = 0
         self.count_out = 0
-        self.center_line_x = 1400  # Linha vertical no centro do frame
+        self.center_line_x = 960   # Linha vertical no centro do frame
         self.crossing_events = []  # Lista para armazenar os eventos de entrada e saída
+        self.hive_x = hive_x
+        self.hive_y = hive_y
 
     def calculate_probability(self, x, y, cx, cy, a=600, b=200):
         dx = cx
         dy = cy
 
-        hive_x = 0
-        hive_y = 960
-        t = -math.atan2(dy - hive_y, dx - hive_x)
+        t = -math.atan2(dy - self.hive_y, dx - self.hive_x)
 
         # Rotação das coordenadas (x1, y1) para (x2, y2)
         x1 = x - cx
@@ -29,13 +29,16 @@ class ProbabilisticTracker:
         kx = (1 / t) * x + (cy - cx / t) if t != 0 else float("inf")
         c = a / 3
         fxy = 0
-        if cy > hive_y:
+        if cy > self.hive_y:
             fxy = -(x2 / a) ** 2 - (y2 / b) ** 2 + 1 if kx >= y else -(x2 / c) ** 2 - (y2 / b) ** 2 + 1
         else:
             fxy = -(x2 / a) ** 2 - (y2 / b) ** 2 + 1 if -kx >= -y else -(x2 / c) ** 2 - (y2 / b) ** 2 + 1
 
         return math.exp(fxy) / math.exp(1)
-
+    
+    def isHiveOnTheLeft(self):
+        return self.hive_x < 960
+    
     def update(self, frame, detections, timestamp):
         self.prev_cont = self.curr_cont
         self.curr_cont = []
@@ -68,17 +71,32 @@ class ProbabilisticTracker:
 
                 # Verifica se cruzou a linha central
                 if (cx_prev > self.center_line_x and cx_curr < self.center_line_x):
-                    self.count_in += 1
-                    self.crossing_events.append({
-                        'direction': 'in',
-                        'timestamp': timestamp,
-                    })
+                    if self.isHiveOnTheLeft():
+                        self.count_in += 1
+                        self.crossing_events.append({
+                            'direction': 'in',
+                            'timestamp': timestamp,
+                        })
+                    else:
+                        self.count_out += 1
+                        self.crossing_events.append({
+                            'direction': 'out',
+                            'timestamp': timestamp,
+                        })
+
                 elif (cx_prev < self.center_line_x and cx_curr > self.center_line_x):
-                    self.count_out += 1
-                    self.crossing_events.append({
-                        'direction': 'out',
-                        'timestamp': timestamp,
-                    })
+                    if self.isHiveOnTheLeft():
+                        self.count_out += 1
+                        self.crossing_events.append({
+                            'direction': 'out',
+                            'timestamp': timestamp,
+                        })
+                    else:
+                        self.count_in += 1
+                        self.crossing_events.append({
+                            'direction': 'in',
+                            'timestamp': timestamp,
+                        })
 
                 used_prev_contours.add((cx_prev, cy_prev))
 
@@ -89,6 +107,7 @@ class ProbabilisticTracker:
 
         # Exibe a contagem no frame
         # self.draw_info(frame)
+    
 
     def draw_info(self, frame):
         cv2.line(frame, (self.center_line_x, 0), (self.center_line_x, 1920), (0, 0, 255), 2)
