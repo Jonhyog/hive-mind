@@ -1,3 +1,4 @@
+import baseRoute from "@/utils/api";
 import { useEffect, useState } from "react";
 
 type AllowedMetrics = "pressure" | "temperature" | "umidity" | "noise";
@@ -17,7 +18,7 @@ const useGetSensors = (vars: GetSensorsVariables): GetSensorsResponse[] => {
   const [sensors, setSensors] = useState<GetSensorsResponse[]>([]);
 
   useEffect(() => {
-    const url = new URL("http://localhost:3003/sensor");
+    const url = new URL(`${baseRoute}/sensor`);
     const getSensors = async () => {
       const filteredEntries = Object.fromEntries(
         Object.entries(vars).filter(

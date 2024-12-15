@@ -2,7 +2,17 @@ import { Button } from "@/components/ui/button";
 import { useCallback, useRef } from "react";
 import TranslatedText from "../TranslatedText";
 
-const convertToCSV = (header: string[], data) => {
+interface CSVData {
+  [U: string]: string | number;
+}
+
+type DownloadCSVProps = {
+  header: string[],
+  data: CSVData[],
+  fileName: string
+}
+
+const convertToCSV = (header: string[], data: CSVData[]) => {
   const rows = Object.values(data).map((row) => {
     const orderedRow = header.map((key) => row[key]);
 
@@ -12,7 +22,7 @@ const convertToCSV = (header: string[], data) => {
   return [header.join(";"), ...rows].join("\n");
 }
 
-const DownloadCSV = ({ header, data, fileName }) => {
+const DownloadCSV = ({ header, data, fileName }: DownloadCSVProps) => {
   const downloadRef = useRef<HTMLDivElement>(null);
 
   const onDownload = useCallback(() => {

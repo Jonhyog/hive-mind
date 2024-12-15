@@ -75,7 +75,8 @@ export default {
       graph: {
         line: "Bees x Time",
         radial: "Net Bees on interval",
-        description: "Histogram showing incoming and departing in grouped by 15min intervals",
+        bar: "Bees x Time",
+        description: "Bar chart showing incoming and departing in grouped by 15min intervals",
         incoming: "Incoming",
         departing: "Departing",
       },

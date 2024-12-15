@@ -1,16 +1,10 @@
 import { useContext, useEffect, useMemo } from "react";
 
-import {
-  Card,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { ChartConfig } from "@/components/ui/chart";
 
 import { HiveContext } from "@/components/custom/HiveProvider";
 import { SensorContext } from "@/components/custom/SensorProvider";
-import SensorSelectionForm from "@/components/custom/SensorSelectionForm";
+import MetricPreviewAndExport from "@/components/custom/SensorSelectionForm";
 import LineChart from "@/components/custom/LineChart";
 
 import useGetTemperature from "@/hooks/useGetTemperature";
@@ -116,16 +110,7 @@ const GraphsWorkspace = (): JSX.Element => {
   return (
     <div className="flex flex-col h-screen w-full md:w-full md:flex-row gap-4 mb-[57px] ">
       <div className="flex flex-col gap-4 w-full md:w-1/3">
-        {/* <Card>
-          <CardHeader className="flex flex-col gap-2">
-            <CardTitle>Preview Selection</CardTitle>
-            <CardDescription>
-              Interact with the forms to update data preview selection and click
-              export to generate a detailed export of the hive data.
-            </CardDescription>
-          </CardHeader>
-        </Card> */}
-        <SensorSelectionForm />
+        <MetricPreviewAndExport />
       </div>
       <div className="flex flex-col flex-1 h-full gap-4">
         <div className="flex flex-col md:flex-row flex-1 gap-4">

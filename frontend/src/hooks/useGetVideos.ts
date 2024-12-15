@@ -1,14 +1,21 @@
+import baseRoute from "@/utils/api";
 import { useEffect, useState } from "react";
 
 type GetVideoVariables = {
   videoId?: string;
 };
 
+type DetectionEvent = {
+  _id: string,
+  direction: string,
+  timestamp: number,
+};
+
 type GetVideosResponse = {
     createdAt: string;
     detector_type: string;
     duration: number;
-    events: any[];
+    events: DetectionEvent[];
     filename: string;
     processing_time: number;
     resolution: string;
@@ -21,7 +28,7 @@ const useGetVideos = (vars: GetVideoVariables): GetVideosResponse[] => {
   const [videos, setVideos] = useState<GetVideosResponse[]>([]);
 
   useEffect(() => {
-    const url = new URL("http://localhost:3003/video/");
+    const url = new URL(`${baseRoute}/video/`);
     const getVideos = async () => {
       const filteredEntries = Object.fromEntries(
         Object.entries(vars).filter(

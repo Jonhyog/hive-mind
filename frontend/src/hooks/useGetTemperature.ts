@@ -1,3 +1,4 @@
+import baseRoute from "@/utils/api";
 import { useEffect, useState } from "react";
 
 type GetTemperatureOptions = {
@@ -6,15 +7,30 @@ type GetTemperatureOptions = {
   endDate?: Date;
 };
 
-const useGetTemperature = (
-  hiveId: string,
+export type GetMetricResponse = {
+  _id: string,
+  __v: number,
+  value: number,
+  timestamp: string,
   sensorId: string,
+  metricType: string,
+  hiveId: string,
+};
+
+const useGetTemperature = (
+  hiveId: string | undefined,
+  sensorId: string | undefined,
   options: GetTemperatureOptions
-) => {
+): GetMetricResponse[] => {
   const [temperature, setTemperature] = useState([]);
 
   useEffect(() => {
-    const url = new URL("http://localhost:3003/metrics/temperature");
+    if (hiveId == null || sensorId == null) {
+      console.log("Unnable to fetch temperature. Some data is undefined");
+      return;
+    }
+
+    const url = new URL(`${baseRoute}/metrics/temperature`);
     const getTemperature = async () => {
       try {
         const filteredOptions = Object.entries(options).filter(

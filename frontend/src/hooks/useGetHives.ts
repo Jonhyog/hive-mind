@@ -1,3 +1,4 @@
+import baseRoute from "@/utils/api";
 import { useEffect, useState } from "react";
 
 type GetHivesVariables = {
@@ -18,7 +19,8 @@ const useGetHives = (vars: GetHivesVariables) => {
   const [hives, setHives] = useState<GetHivesResponse[]>([]);
 
   useEffect(() => {
-    const url = new URL("http://localhost:3003/hive");
+    console.log(baseRoute)
+    const url = new URL(`${baseRoute}/hive`);
     const getHives = async () => {
       const filteredEntries = Object.fromEntries(
         Object.entries(vars ?? {}).filter(

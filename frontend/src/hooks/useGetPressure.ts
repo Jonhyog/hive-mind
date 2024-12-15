@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { GetMetricResponse } from "./useGetTemperature";
+import baseRoute from "@/utils/api";
 
 type GetPressureOptions = {
   limit?: number;
@@ -6,11 +8,16 @@ type GetPressureOptions = {
   endDate?: Date;
 };
 
-const useGetPressure = (hiveId: string, sensorId: string, options: GetPressureOptions) => {
+const useGetPressure = (hiveId: string | undefined, sensorId: string | undefined, options: GetPressureOptions): GetMetricResponse[] => {
   const [pressure, setPressure] = useState([]);
 
   useEffect(() => {
-    const url = new URL("http://localhost:3003/metrics/pressure");
+    if (hiveId == null || sensorId == null) {
+      console.log("Unnable to fetch pressure. Some data is undefined");
+      return;
+    }
+
+    const url = new URL(`${baseRoute}/metrics/pressure`);
     const getPressure = async () => {
       try {
         const filteredOptions = Object.entries(options).filter(

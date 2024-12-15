@@ -1,3 +1,4 @@
+import BeeChart from "@/components/custom/BeeChart";
 import BeeLineChart from "@/components/custom/BeeLineChart";
 import { DataTable } from "@/components/custom/DataTable";
 import CustomRadialChart from "@/components/custom/RadialChart";
@@ -11,7 +12,7 @@ import {
 import { ChartConfig } from "@/components/ui/chart";
 import useGetVideos from "@/hooks/useGetVideos";
 import { ColumnDef } from "@tanstack/react-table";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { Link, useParams } from "react-router-dom";
 
 const radialConfig = {
@@ -143,6 +144,10 @@ const ResultsWorkspace = (): JSX.Element => {
   const videos = useGetVideos(videosOptions);
   const { id } = useParams();
 
+  useEffect(() => {
+    console.log(videos);
+  }, [videos]);
+
   const videosObj = useMemo(() => {
     return Object.fromEntries(
       videos.map((vid) => {
@@ -232,6 +237,7 @@ const ResultsWorkspace = (): JSX.Element => {
                     </CardDescription>
                   </CardHeader>
                 </Card>
+                {/* <BeeChart className="w-full"/> */}
                 <BeeLineChart
                   chartData={graphsData[id] ?? [{}]}
                   chartConfig={lineChartConfig}

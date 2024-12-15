@@ -1,13 +1,10 @@
 import { useMemo } from "react";
 
-import { TrendingUp } from "lucide-react";
 import { Label, PolarRadiusAxis, RadialBar, RadialBarChart } from "recharts";
 
 import {
   Card,
   CardContent,
-  CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -37,7 +34,6 @@ const CustomRadialChart = ({
   const incoming = chartData["incoming"] ?? 0;
   const departing = chartData["departing"] ?? 0;
   const diff = incoming - departing;
-  // const total = Object.values(chartData).reduce((acc, curr) => acc + curr, 0);
 
   const plots = useMemo(() => {
     const keys = Object.keys(chartData);
@@ -104,14 +100,6 @@ const CustomRadialChart = ({
           </RadialBarChart>
         </ChartContainer>
       </CardContent>
-      {/* <CardFooter className="flex-col gap-2 text-sm">
-        <div className="flex items-center gap-2 font-medium leading-none">
-          Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
-        </div>
-        <div className="leading-none text-muted-foreground">
-          Showing total visitors for the last 6 months
-        </div>
-      </CardFooter> */}
     </Card>
   );
 };

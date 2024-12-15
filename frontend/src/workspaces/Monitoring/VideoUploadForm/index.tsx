@@ -13,6 +13,7 @@ import {
 
 import { useToast } from "@/components/ui/use-toast";
 import TranslatedText from "@/components/custom/TranslatedText";
+import baseRoute from "@/utils/api";
 
 type VideoUploadFormProps = {
   onFileChange?: (fileUrl: string) => void;
@@ -43,39 +44,42 @@ const VideoUploadForm = ({
   );
 
   const onSubmit = useCallback(async () => {
-    const endpoint = "http://localhost:3003/video/upload";
-    const formData = new FormData();
-    formData.append("video", file);
-    formData.append("detector_type", algorithm);
-    formData.append("side", side);
-
-    for (const entrie of formData.entries()) {
-      console.log(entrie);
+    if (file != null) {
+      const endpoint = `${baseRoute}/video/upload`;
+      const formData = new FormData();
+      formData.append("video", file);
+      formData.append("detector_type", algorithm);
+      formData.append("side", side);
+  
+      for (const entrie of formData.entries()) {
+        console.log(entrie);
+      }
+  
+      try {
+        const response = await fetch(endpoint, {
+          method: "POST",
+          body: formData,
+        });
+        await response.json();
+  
+        toast({
+          duration: 5000,
+          title: "Job created with success!",
+          description: `You can check the job status and other information on the results tab.`,
+        });
+      } catch (error) {
+        toast({
+          duration: 5000,
+          title: "Failed to create job.",
+          description:
+            "An unexpected failure happened while creating the job. Please try again.",
+          variant: "destructive",
+        });
+  
+        console.log("Failed to upload video: ", error);
+      }
     }
 
-    try {
-      const response = await fetch(endpoint, {
-        method: "POST",
-        body: formData,
-      });
-      await response.json();
-
-      toast({
-        duration: 5000,
-        title: "Job created with success!",
-        description: `You can check the job status and other information on the results tab.`,
-      });
-    } catch (error) {
-      toast({
-        duration: 5000,
-        title: "Failed to create job.",
-        description:
-          "An unexpected failure happened while creating the job. Please try again.",
-        variant: "destructive",
-      });
-
-      console.log("Failed to upload video: ", error);
-    }
   }, [file, algorithm, side, toast]);
 
   return (

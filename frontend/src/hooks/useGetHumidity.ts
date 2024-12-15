@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { GetMetricResponse } from "./useGetTemperature";
+import baseRoute from "@/utils/api";
 
 type GetHumidityOptions = {
   limit?: number;
@@ -6,11 +8,16 @@ type GetHumidityOptions = {
   endDate?: Date;
 };
 
-const useGetHumidity = (hiveId: string, sensorId: string, options: GetHumidityOptions) => {
+const useGetHumidity = (hiveId: string | undefined, sensorId: string | undefined, options: GetHumidityOptions): GetMetricResponse[] => {
   const [humidity, setHumidity] = useState([]);
 
   useEffect(() => {
-    const url = new URL("http://localhost:3003/metrics/umidity");
+    if (hiveId == null || sensorId == null) {
+      console.log("Unnable to fetch humidity. Some data is undefined");
+      return;
+    }
+
+    const url = new URL(`${baseRoute}/metrics/umidity`);
     const getHumidity = async () => {
       try {
         const filteredOptions = Object.entries(options).filter(

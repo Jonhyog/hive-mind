@@ -2,6 +2,9 @@ import { useState } from "react";
 
 import VideoUploadForm from "./VideoUploadForm";
 import PreviewMock from "./PreviewMock";
+
+import { beeHive } from "@lucide/lab";
+
 import {
   Card,
   CardDescription,
@@ -9,6 +12,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import TranslatedText from "@/components/custom/TranslatedText";
+import { Icon } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
 
 const VideoMonitoringWorkspace = (): JSX.Element => {
   const [fileUrl, setFileUrl] = useState<string | null>();
@@ -50,12 +55,29 @@ const VideoMonitoringWorkspace = (): JSX.Element => {
         </Card>
         <div className="flex flex-1 flex-col md:flex-row gap-2">
           <VideoUploadForm onFileChange={setFileUrl} />
-          <div className="flex-1 flex-col items-start gap-8 md:flex h-full">
+          <div className="flex-1 flex-col items-start gap-2 md:flex h-full">
             <form className="grid w-full items-start gap-4">
-              <fieldset className="grid gap-6 rounded-lg border md:h-[247px] p-4">
+              <fieldset className="grid gap-6 rounded-lg border p-4">
                 <legend className="-ml-1 px-1 text-sm font-medium">
-                  Reserved
+                  Hive on the left side
                 </legend>
+                <div className="flex h-20 flex-1 items-center justify-between border-2 border-secondary rounded-md p-2 px-4">
+                  <Icon className="w-10 h-10" iconNode={beeHive} />
+                  <Separator className="bg-black/50 h-4/5" orientation="vertical" />
+                  <div className="w-10 h-10"></div>
+                </div>
+              </fieldset>
+            </form>
+            <form className="grid w-full items-start gap-4">
+              <fieldset className="grid gap-6 rounded-lg border p-4">
+                <legend className="-ml-1 px-1 text-sm font-medium">
+                  Hive on the right side
+                </legend>
+                <div className="flex h-20 flex-1 flex-row-reverse items-center justify-between border-2 border-secondary p-2 px-4">
+                  <Icon className="w-10 h-10" iconNode={beeHive} />
+                  <Separator className="bg-black/50 h-4/5" orientation="vertical" />
+                  <div className="w-10 h-10"></div>
+                </div>
               </fieldset>
             </form>
           </div>

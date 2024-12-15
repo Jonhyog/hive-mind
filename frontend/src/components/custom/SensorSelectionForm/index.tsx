@@ -161,7 +161,7 @@ const columns: ColumnDef<SensorData>[] = [
 ];
 
 // TODO: Update component name
-const SensorSelectionForm = (): JSX.Element => {
+const MetricPreviewAndExport = (): JSX.Element => {
   const { hive } = useContext(HiveContext);
   const { temperature, pressure, humidity, noise } = useContext(SensorContext);
 
@@ -259,4 +259,4 @@ const SensorSelectionForm = (): JSX.Element => {
   );
 };
 
-export default SensorSelectionForm;
+export default MetricPreviewAndExport;

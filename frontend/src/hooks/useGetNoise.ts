@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { GetMetricResponse } from "./useGetTemperature";
+import baseRoute from "@/utils/api";
 
 type GetNoiseOptions = {
   limit?: number;
@@ -6,11 +8,16 @@ type GetNoiseOptions = {
   endDate?: Date;
 };
 
-const useGetNoise = (hiveId: string, sensorId: string, options: GetNoiseOptions) => {
+const useGetNoise = (hiveId: string | undefined, sensorId: string | undefined, options: GetNoiseOptions): GetMetricResponse[] => {
   const [noise, setNoise] = useState([]);
 
   useEffect(() => {
-    const url = new URL("http://localhost:3003/metrics/noise");
+    if (hiveId == null || sensorId == null) {
+      console.log("Unnable to fetch temperature. Some data is undefined");
+      return;
+    }
+
+    const url = new URL(`${baseRoute}/metrics/noise`);
     const getNoise = async () => {
       try {
         const filteredOptions = Object.entries(options).filter(
